@@ -1,49 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-g">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKS Quiz Platform</title>
-    <!-- Load Tailwind CSS -->
+    <title>Indian Knowledge System - Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Load Heroicons for better UI -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
-    <!-- Custom Styles -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f4f4f5; /* Tailwind gray-100 */
         }
+        
         /* Custom styles for option buttons */
         .option-btn {
             transition: all 0.3s ease;
+            background-color: #ffffff; /* White */
+            border: 2px solid #e5e7eb; /* gray-200 */
+            color: #374151; /* gray-700 */
         }
         .option-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #4338ca; /* indigo-700 */
         }
-        /* Styles for correct/wrong answers (Practice Mode / Review Mode) */
+        
+        /* Styles for correct/wrong answers (Practice Mode) */
         .option-btn.correct {
-            background-color: #16a34a !important; /* Tailwind green-600 */
-            border-color: #15803d !important; /* Tailwind green-700 */
+            background-color: #16a34a !important; /* green-600 */
+            border-color: #15803d !important; /* green-700 */
             color: white !important;
         }
         .option-btn.wrong {
-            background-color: #dc2626 !important; /* Tailwind red-600 */
-            border-color: #b91c1c !important; /* Tailwind red-700 */
+            background-color: #dc2626 !important; /* red-600 */
+            border-color: #b91c1c !important; /* red-700 */
             color: white !important;
         }
-        /* Style for selected answer (Test Mode) */
+        
+        /* Style for selected answer (Test Mode - Removed, but class is good for 'selected' state) */
         .option-btn.selected {
-            background-color: #2563eb !important; /* Tailwind blue-600 */
-            border-color: #1d4ed8 !important; /* Tailwind blue-700 */
+            background-color: #4338ca !important; /* indigo-700 */
+            border-color: #3730a3 !important; /* indigo-800 */
             color: white !important;
         }
+        
         .option-btn:disabled {
             opacity: 0.9;
             cursor: not-allowed;
@@ -54,14 +59,17 @@
             transition: all 0.3s ease;
             cursor: pointer;
             min-height: 160px; /* Ensure cards are same height */
+            background: #ffffff;
+            border: 2px solid #e5e7eb; /* gray-200 */
         }
         .mode-card:hover {
             transform: scale(1.03);
+            border-color: #f97316; /* orange-500 */
         }
         .mode-card.selected {
-            border-color: #3b82f6; /* Tailwind blue-500 */
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-            background-color: #1f2937; /* Tailwind gray-800 */
+            border-color: #4338ca; /* indigo-700 */
+            box-shadow: 0 0 15px rgba(67, 56, 202, 0.3);
+            background-color: #f5f3ff; /* indigo-50 */
         }
         
         /* Fade-in animation */
@@ -72,126 +80,709 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Primary Button Style (Saffron) */
+        .btn-primary {
+             background-color: #f97316; /* orange-500 */
+             color: white;
+        }
+        .btn-primary:hover {
+            background-color: #ea580c; /* orange-600 */
+        }
+
+        /* Secondary Button Style (Indigo) */
+        .btn-secondary {
+            background-color: #4338ca; /* indigo-700 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #3730a3; /* indigo-800 */
+        }
+        
+        /* Neutral Button Style */
+        .btn-neutral {
+            background-color: #6b7280; /* gray-500 */
+            color: white;
+        }
+        .btn-neutral:hover {
+            background-color: #4b5563; /* gray-600 */
+        }
+        .btn-neutral:disabled {
+            background-color: #d1d5db; /* gray-300 */
+            cursor: not-allowed;
+        }
+
+        /* Home button at top of quiz */
+        .home-btn-link {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #4b5563; /* gray-600 */
+            transition: color 0.3s ease;
+        }
+        .home-btn-link:hover {
+            color: #111827; /* gray-900 */
+        }
+
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen p-4">
 
-    <!-- Main App Container -->
     <div id="app" class="w-full max-w-4xl">
 
-        <!-- Start Screen -->
-        <div id="start-screen" class="bg-gray-800 shadow-xl rounded-lg p-8 md:p-12 text-center fade-in">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">Indian Knowledge System</h1>
-            <p class="text-xl md:text-2xl text-blue-300 mb-8">Quiz Platform</p>
-            
-            <!-- Unit Selection -->
-            <div class="mb-6">
-                <label for="unit-select" class="block text-sm font-medium text-gray-300 mb-2">1. Select a Unit</label>
-                <select id="unit-select" class="w-full bg-gray-700 text-white border-2 border-gray-600 rounded-lg p-3">
-                    <option value="unit2">Unit II: Engineering, Technology, and Architecture</option>
-                    <option value="unit3">Unit III: (Add Your Questions)</option>
-                    <option value="unit4">Unit IV: (Add Your Questions)</option>
-                </select>
-            </div>
+        <div id="start-screen" class="bg-white shadow-xl rounded-lg overflow-hidden fade-in">
+            <div class="p-8 md:p-12 text-center">
+                <div class="w-full py-6 bg-orange-500 -mt-12 -mx-12 mb-10">
+                    <h1 class="text-3xl md:text-4xl font-bold text-white">Indian Knowledge System</h1>
+                    <p class="text-xl md:text-2xl text-orange-100">Quiz Platform</p>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="unit-select" class="block text-lg font-medium text-gray-700 mb-2">1. Select a Unit</label>
+                    <select id="unit-select" class="w-full bg-gray-50 text-gray-900 border-2 border-gray-300 rounded-lg p-3 text-base">
+                        <option value="unit1">Unit I: Indian History</option>
+                        <option value="unit2">Unit II: Engineering, Technology, and Architecture</option>
+                        <option value="unit3">Unit III: Science, Astronomy & Mathematics</option>
+                    </select>
+                </div>
 
-            <!-- Mode Selection -->
-            <div class="mb-8">
-                <label class="block text-sm font-medium text-gray-300 mb-2">2. Choose a Mode</label>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Practice Mode Card -->
-                    <div id="mode-practice" class="mode-card bg-gray-700 p-6 rounded-lg border-2 border-gray-600 selected flex flex-col justify-center items-center">
-                        <ion-icon name="bulb-outline" class="text-4xl text-yellow-400 mb-2"></ion-icon>
-                        <h3 class="text-xl font-semibold text-white">Practice Mode</h3>
-                        <p class="text-gray-300 text-sm">Get instant feedback after each question.</p>
-                    </div>
-                    <!-- Test Mode Card -->
-                    <div id="mode-test" class="mode-card bg-gray-700 p-6 rounded-lg border-2 border-gray-600 flex flex-col justify-center items-center">
-                        <ion-icon name="document-text-outline" class="text-4xl text-red-400 mb-2"></ion-icon>
-                        <h3 class="text-xl font-semibold text-white">Test Mode</h3>
-                        <p class="text-gray-300 text-sm">Get your score and review at the end.</p>
-                    </div>
-                    <!-- Review Mode Card -->
-                    <div id="mode-review" class="mode-card bg-gray-700 p-6 rounded-lg border-2 border-gray-600 flex flex-col justify-center items-center">
-                        <ion-icon name="eye-outline" class="text-4xl text-green-400 mb-2"></ion-icon>
-                        <h3 class="text-xl font-semibold text-white">Review Mode</h3>
-                        <p class="text-gray-300 text-sm">View all questions with their answers.</p>
+                <div class="mb-8">
+                    <label class="block text-lg font-medium text-gray-700 mb-2">2. Choose a Mode</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="mode-practice" class="mode-card p-6 rounded-lg selected flex flex-col justify-center items-center text-gray-800">
+                            <ion-icon name="bulb-outline" class="text-4xl text-yellow-500 mb-2"></ion-icon>
+                            <h3 class="text-xl font-semibold">Practice Mode</h3>
+                            <p class="text-gray-600 text-sm">Get instant feedback after each question.</p>
+                        </div>
+                        <div id="mode-review" class="mode-card p-6 rounded-lg flex flex-col justify-center items-center text-gray-800">
+                            <ion-icon name="eye-outline" class="text-4xl text-green-500 mb-2"></ion-icon>
+                            <h3 class="text-xl font-semibold">Review Mode</h3>
+                            <p class="text-gray-600 text-sm">View all questions with their answers.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <button id="start-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-12 rounded-lg text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                Start
-            </button>
+                <button id="start-btn" class="w-full btn-primary font-bold py-3 px-12 rounded-lg text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
+                    Start
+                </button>
+            </div>
         </div>
 
-        <!-- Quiz Screen (Hidden by default) -->
-        <div id="quiz-screen" class="hidden bg-gray-800 shadow-xl rounded-lg p-6 md:p-10 max-w-3xl mx-auto">
-            <!-- Progress -->
+        <div id="quiz-screen" class="hidden bg-white shadow-xl rounded-lg p-6 md:p-10 max-w-3xl mx-auto fade-in">
+            <div classs="flex justify-between items-center mb-6">
+                <button id="home-btn-quiz" class="home-btn-link">
+                    <ion-icon name="chevron-back-outline" class="mr-1"></ion-icon>
+                    Back to Home
+                </button>
+            </div>
+
             <div class="mb-6">
                 <div class="flex justify-between items-center mb-2">
-                    <span id="progress-text" class="text-sm font-medium text-blue-300">Question 1 / 85</span>
-                    <span id="score-text-live" class="text-sm font-medium text-gray-300">Score: 0</span>
+                    <span id="progress-text" class="text-sm font-medium text-indigo-700">Question 1 / 85</span>
+                    <span id="score-text-live" class="text-sm font-medium text-gray-600">Score: 0</span>
                 </div>
-                <div class="w-full bg-gray-700 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-indigo-700 h-2.5 rounded-full" style="width: 0%"></div>
                 </div>
             </div>
 
-            <!-- Question -->
-            <h2 id="question-text" class="text-xl md:text-2xl font-semibold text-white mb-6" style="min-height: 6rem;">
+            <h2 id="question-text" class="text-xl md:text-2xl font-semibold text-gray-900 mb-6" style="min-height: 6rem;">
                 Question text goes here...
             </h2>
 
-            <!-- Options -->
             <div id="options-container" class="space-y-3 mb-6">
-                <!-- Option buttons will be injected here by JS -->
-            </div>
+                </div>
 
-            <!-- Feedback (Practice / Review Mode Only) -->
-            <div id="feedback-area" class="hidden bg-gray-700 p-4 rounded-lg fade-in">
+            <div id="feedback-area" class="hidden bg-gray-50 border border-gray-200 p-4 rounded-lg fade-in">
                 <h3 id="feedback-title" class="text-lg font-bold mb-2"></h3>
-                <p id="feedback-explanation" class="text-gray-200"></p>
+                <p id="feedback-explanation" class="text-gray-700"></p>
             </div>
 
-            <!-- Navigation -->
-            <div class="mt-6 text-right">
-                <button id="next-btn" class="hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded-lg transition-all duration-300">
+            <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
+                <button id="prev-btn" class="btn-neutral font-bold py-2 px-8 rounded-lg transition-all duration-300">
+                    Previous
+                </button>
+                <button id="next-btn" class="hidden btn-secondary font-bold py-2 px-8 rounded-lg transition-all duration-300">
                     Next
                 </button>
             </div>
         </div>
 
-        <!-- End Screen (Hidden by default) -->
-        <div id="end-screen" class="hidden bg-gray-800 shadow-xl rounded-lg p-8 md:p-12 text-center fade-in max-w-3xl mx-auto">
-            <h1 id="final-title" class="text-3xl md:text-4xl font-bold text-white mb-4">Quiz Complete!</h1>
-            
-            <!-- Score Section (Practice / Test Mode) -->
-            <div id="score-section">
-                <p class="text-xl text-gray-300 mb-6">Your final score is:</p>
-                <h2 id="final-score-text" class="text-6xl font-extrabold text-blue-400 mb-2">30 / 85</h2>
-                <p id="percentage-text" class="text-2xl font-medium text-white mb-8">(35%)</p>
-                <p id="final-message" class="text-lg text-gray-300 mb-10">Keep practicing. You can do better!</p>
+        <div id="review-screen" class="hidden bg-white shadow-xl rounded-lg p-6 md:p-10 max-w-4xl mx-auto fade-in">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <h2 id="review-title" class="text-2xl font-bold text-gray-900">Review Mode</h2>
+                <button id="home-btn-review" class="home-btn-link">
+                    <ion-icon name="chevron-back-outline" class="mr-1"></ion-icon>
+                    Back to Home
+                </button>
             </div>
             
-            <!-- Review Section (Test Mode Only) -->
-            <div id="review-container" class="hidden mt-12 text-left space-y-4">
-                <h2 class="text-2xl font-bold text-white text-center mb-6">Review Your Answers</h2>
-                <!-- Review items will be injected here -->
-            </div>
+            <div id="review-container-main" class="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+                </div>
+        </div>
 
-            <button id="restart-btn" class="mt-8 w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-12 rounded-lg text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
+
+        <div id="end-screen" class="hidden bg-white shadow-xl rounded-lg p-8 md:p-12 text-center fade-in max-w-3xl mx-auto">
+            <h1 id="final-title" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Quiz Complete!</h1>
+            
+            <div id="score-section">
+                <p class="text-xl text-gray-600 mb-6">Your final score is:</p>
+                <h2 id="final-score-text" class="text-6xl font-extrabold text-indigo-700 mb-2">30 / 85</h2>
+                <p id="percentage-text" class="text-2xl font-medium text-gray-800 mb-8">(35%)</p>
+                <p id="final-message" class="text-lg text-gray-600 mb-10">Keep practicing. You can do better!</p>
+            </div>
+            
+            <button id="restart-btn" class="mt-8 w-full md:w-auto btn-primary font-bold py-3 px-12 rounded-lg text-lg shadow-lg transition-all duration-300 transform hover:scale-105">
                 Back to Start
             </button>
         </div>
 
     </div>
 
-    <!-- JavaScript Logic -->
     <script>
         // --- ALL QUIZ DATA ---
+        // (Unit 1 and 3 added, Unit 4 removed, Explanations adapted)
         const allQuizData = {
+            unit1: [
+                // Source: Unit1 (2).docx
+                {
+                    question: "What major river system provided fertile land for early settlements in ancient India?",
+                    options: ["Indus River", "Nile River", "Tigris-Euphrates River", "Yellow River"],
+                    answer: "Indus River",
+                    explanation: "The Indus River and its tributaries created a large, fertile floodplain, ideal for agriculture, which supported the rise of the Indus Valley Civilization."
+                },
+                {
+                    question: "The Harappan civilization was located in which present-day country?",
+                    options: ["Pakistan", "India", "Bangladesh", "Sri Lanka"],
+                    answer: "Pakistan",
+                    explanation: "The major sites of the Harappan civilization, such as Harappa and Mohenjo-Daro, are located in modern-day Pakistan."
+                },
+                {
+                    question: "The Indus Valley Civilization is also known as the __________.",
+                    options: ["Harappan Civilization", "Aryan Civilization", "Mughal Empire", "Gupta Dynasty"],
+                    answer: "Harappan Civilization",
+                    explanation: "It is named after Harappa, the first city of this civilization to be excavated in the 1920s."
+                },
+                {
+                    question: "Which region of ancient India is considered the birthplace of Hinduism?",
+                    options: ["Punjab", "Rajasthan", "Gujarat", "Uttar Pradesh"],
+                    answer: "Punjab",
+                    explanation: "The Punjab region, or the 'land of five rivers', is where the Vedas, the earliest scriptures of Hinduism, are believed to have been composed."
+                },
+                {
+                    question: "The ancient Indian city of Varanasi is situated on the banks of which river?",
+                    options: ["Ganges", "Yamuna", "Saraswati", "Brahmaputra"],
+                    answer: "Ganges",
+                    explanation: "Varanasi, one of the oldest continuously inhabited cities in the world, is located on the western bank of the holy Ganges River."
+                },
+                {
+                    question: "Which of the following ancient Indian cities was a major center of learning and education?",
+                    options: ["Takṣaśilā", "Mathura", "Ayodhya", "Pataliputra"],
+                    answer: "Takṣaśilā",
+                    explanation: "Takṣaśilā (Taxila) was a renowned ancient center of learning, attracting students from various parts of the world, though it was structured more as a collection of scholars than a modern university."
+                },
+                {
+                    question: "Which ancient Indian university was renowned for its teachings in various fields, including philosophy and Buddhism?",
+                    options: ["Nalanda University", "Taxila University", "Vikramshila University", "Pushpagiri University"],
+                    answer: "Nalanda University",
+                    explanation: "Nalanda Mahavihara (University) in modern-day Bihar was a celebrated Buddhist monastery and a great center of learning for centuries."
+                },
+                {
+                    question: "The ancient Indian education system primarily emphasized the study of __________.",
+                    options: ["All of the above", "Mathematics", "Philosophy", "Medicine"],
+                    answer: "All of the above",
+                    explanation: "The ancient system was holistic, encompassing philosophy (Vedas, Upanishads), mathematics (for rituals and astronomy), and medicine (Ayurveda)."
+                },
+                {
+                    question: "The transition from hunting and gathering to agriculture in ancient India led to the development of __________.",
+                    options: ["All of the above", "Social hierarchies", "Trade networks", "Permanent settlements"],
+                    answer: "All of the above",
+                    explanation: "Agriculture (the Neolithic Revolution) allowed for permanent settlements, food surpluses, population growth, and job specialization, which led to social hierarchies and trade."
+                },
+                {
+                    question: "The earliest known agricultural settlements in ancient India were located in the region of __________.",
+                    options: ["Punjab", "Bihar", "Gujarat", "Rajasthan"],
+                    answer: "Punjab", // Note: Mehrgarh (in modern Pakistan) is earlier, but of these options, Punjab is a key region.
+                    explanation: "While Mehrgarh (in modern Pakistan) is a key early site, the fertile plains of the Punjab region were crucial for the development of early agricultural settlements that grew into the Indus Valley Civilization."
+                },
+                {
+                    question: "The Vedas are a collection of ancient Indian __________.",
+                    options: ["Religious texts", "Philosophical treatises", "Epic poems", "Legal codes"],
+                    answer: "Religious texts",
+                    explanation: "The Vedas are a large body of religious texts originating in ancient India, composed in Vedic Sanskrit. They form the oldest layer of Sanskrit literature and the foundation of Hinduism."
+                },
+                {
+                    question: "The oldest Veda is the __________.",
+                    options: ["Rigveda", "Yajurveda", "Samaveda", "Atharvaveda"],
+                    answer: "Rigveda",
+                    explanation: "The Rigveda, a collection of hymns, is the oldest and most important of the four Vedas, dating back to as early as 1500 BCE."
+                },
+                {
+                    question: "The Upanishads are a collection of texts that explore __________.",
+                    options: ["Philosophical ideas", "Yoga and meditation", "Mythology and folklore", "Rituals and sacrifices"],
+                    answer: "Philosophical ideas",
+                    explanation: "The Upanishads are late Vedic texts that form the basis of Hindu philosophical thought, focusing on concepts like Brahman (ultimate reality) and Atman (soul/self)."
+                },
+                {
+                    question: "The Bhagavad Gita is a part of which ancient Indian epic?",
+                    options: ["Mahabharata", "Puranas", "Ramayana", "Upanishads"],
+                    answer: "Mahabharata",
+                    explanation: "The Bhagavad Gita ('Song of the Lord') is a 700-verse scripture that is part of the Bhishma Parva of the epic Mahabharata."
+                },
+                {
+                    question: "The Ramayana and the Mahabharata are considered two of the greatest Indian __________.",
+                    options: ["Epics", "Temples", "Festivals", "Sculptures"],
+                    answer: "Epics",
+                    explanation: "These two texts, known as 'Itihasa' (history), are the two great Sanskrit epics of ancient India, narrating foundational stories of dharma and heroism."
+                },
+                {
+                    question: "The Ramayana tells the story of the prince __________.",
+                    options: ["Rama", "Krishna", "Arjuna", "Hanuman"],
+                    answer: "Rama",
+                    explanation: "The Ramayana narrates the life of Rama, the prince of Ayodhya, including his exile, the abduction of his wife Sita, and his eventual victory over the demon king Ravana."
+                },
+                {
+                    question: "Which festival celebrates the victory of good over evil and is associated with the story of Lord Rama?",
+                    options: ["Diwali", "Holi", "Durga Puja", "Navaratri"],
+                    answer: "Diwali",
+                    explanation: "Diwali, the festival of lights, celebrates Lord Rama's return to Ayodhya after defeating Ravana and completing his 14-year exile."
+                },
+                {
+                    question: "The festival of Holi is known for its vibrant colors and the celebration of __________.",
+                    options: ["All of the above", "Harvest and fertility", "Victory of good over evil", "Love and friendship"],
+                    answer: "All of the above",
+                    explanation: "Holi is a spring festival celebrating the victory of good over evil (Holika and Prahlad), the arrival of spring (harvest/fertility), and a time to celebrate love and friendship."
+                },
+                {
+                    question: "The Kumbh Mela, a major Hindu pilgrimage, is held every __________ years.",
+                    options: ["12", "4", "6", "2"],
+                    answer: "12",
+                    explanation: "The Purna (full) Kumbh Mela occurs at four different locations (Prayagraj, Haridwar, Nashik, Ujjain) in a rotating cycle, with one location hosting it every 12 years."
+                },
+                {
+                    question: "The ancient Indian festival of Navaratri is dedicated to the worship of __________.",
+                    options: ["Goddess Durga", "Lord Shiva", "Lord Vishnu", "Lord Ganesha"],
+                    answer: "Goddess Durga",
+                    explanation: "Navaratri ('nine nights') is a major festival celebrating the victory of the goddess Durga over the demon Mahishasura. It honors the different forms of the divine feminine (Shakti)."
+                },
+                {
+                    question: "The concept of \"Ahimsa\" (non-violence) was most strongly advocated by which historical figure?",
+                    options: ["Mahavira", "Gautama Buddha", "Ashoka the Great", "Emperor Akbar"],
+                    answer: "Mahavira",
+                    explanation: "While also central to Buddhism and Hinduism, Ahimsa is the foundational principle of Jainism, and its most rigorous application was taught by Mahavira."
+                },
+                {
+                    question: "The Maurya Empire reached its greatest extent under the rule of which emperor?",
+                    options: ["Ashoka the Great", "Bindusara", "Chandragupta Maurya", "Chandragupta II"],
+                    answer: "Ashoka the Great",
+                    explanation: "Ashoka, the grandson of the founder Chandragupta Maurya, expanded the empire to include almost the entire Indian subcontinent."
+                },
+                {
+                    question: "The Arthashastra, an ancient Indian treatise on statecraft, was written by __________.",
+                    options: ["Chanakya", "Kalidasa", "Panini", "Vishnu Sharma"],
+                    answer: "Chanakya",
+                    explanation: "Chanakya (also known as Kautilya or Vishnugupta) was the advisor to Chandragupta Maurya and wrote the Arthashastra, a detailed manual on politics, economics, and military strategy."
+                },
+                {
+                    question: "The Gupta Empire is known for its contributions to which field?",
+                    options: ["All of the above", "Art and literature", "Architecture", "Science and mathematics"],
+                    answer: "All of the above",
+                    explanation: "The Gupta period (c. 320-550 CE) is considered the 'Golden Age of India' due to significant achievements in science, mathematics (like the concept of zero), art, architecture, and literature (like the works of Kalidasa)."
+                },
+                {
+                    question: "Which ancient Indian astronomer is known for his accurate calculation of the value of pi?",
+                    options: ["Aryabhata", "Brahmagupta", "Brahmagupta", "Bhaskara II"],
+                    answer: "Aryabhata",
+                    explanation: "In his work *Aryabhatiya*, Aryabhata calculated the value of pi as 3.1416, which is remarkably close to the modern value."
+                },
+                {
+                    question: "The Chola dynasty of ancient India was known for its advancements in __________.",
+                    options: ["All of the above", "Temple architecture", "Administration", "Maritime trade"],
+                    answer: "All of the above",
+                    explanation: "The Cholas excelled in building magnificent granite temples (like the Brihadeeswarar Temple), maintained a powerful navy for maritime trade, and had a sophisticated administrative system."
+                },
+                {
+                    question: "The Sultanate of Delhi was established by which Islamic ruler in the 13th century?",
+                    options: ["Qutb-ud-din Aibak", "Muhammad bin Tughlaq", "Babur", "Alauddin Khilji"],
+                    answer: "Qutb-ud-din Aibak",
+                    explanation: "After the death of Muhammad Ghori, his general Qutb-ud-din Aibak declared himself ruler and established the Mamluk (Slave) dynasty, the first dynasty of the Delhi Sultanate, in 1206."
+                },
+                {
+                    question: "The Mughal Empire in India was founded by __________.",
+                    options: ["Babur", "Akbar", "Shah Jahan", "Aurangzeb"],
+                    answer: "Babur",
+                    explanation: "Babur, a descendant of Timur and Genghis Khan, defeated Ibrahim Lodi at the First Battle of Panipat in 1526 to establish the Mughal Empire."
+                },
+                {
+                    question: "The Taj Mahal, a UNESCO World Heritage Site, was built during the reign of which Mughal emperor?",
+                    options: ["Shah Jahan", "Jahangir", "Akbar", "Aurangzeb"],
+                    answer: "Shah Jahan",
+                    explanation: "Emperor Shah Jahan commissioned the Taj Mahal in Agra as a mausoleum for his favorite wife, Mumtaz Mahal. It was completed around 1653."
+                },
+                {
+                    question: "The Battle of Plassey in 1757 marked the beginning of British colonial rule in which region of India?",
+                    options: ["Bengal", "Punjab", "Maharashtra", "Tamil Nadu"],
+                    answer: "Bengal",
+                    explanation: "Robert Clive's victory at Plassey against Siraj-ud-Daulah, the Nawab of Bengal, gave the British East India Company effective control over the wealthy province of Bengal, a pivotal step in their colonial expansion."
+                },
+                {
+                    question: "The Indian Rebellion of 1857, also known as the Sepoy Mutiny, was triggered by the use of which ammunition?",
+                    options: ["Cartridges greased with cow and pig fat", "Cartridges greased with coconut oil", "Cartridges greased with ghee", "Cartridges greased with vegetable oil"],
+                    answer: "Cartridges greased with cow and pig fat",
+                    explanation: "The introduction of the Enfield rifle, whose cartridges were rumored to be greased with fat considered taboo by both Hindus (cow) and Muslims (pig), was the immediate cause of the rebellion."
+                },
+                {
+                    question: "The Indian National Congress was formed in which year?",
+                    options: ["1885", "1857", "1905", "1947"],
+                    answer: "1885",
+                    explanation: "The Indian National Congress was founded in 1885 by A.O. Hume and other educated Indians to create a platform for civil and political dialogue with the British Raj."
+                },
+                {
+                    question: "The partition of India and Pakistan occurred in which year?",
+                    options: ["1947", "1945", "1950", "1962"],
+                    answer: "1947",
+                    explanation: "Upon gaining independence from Britain, the subcontinent was partitioned into two independent dominions, India and Pakistan, on August 14-15, 1947."
+                },
+                {
+                    question: "The Indian independence movement was led by prominent leaders such as __________.",
+                    options: ["All of the above", "Mahatma Gandhi", "Jawaharlal Nehru", "Subhas Chandra Bose"],
+                    answer: "All of the above",
+                    explanation: "Mahatma Gandhi (non-violent resistance), Jawaharlal Nehru (political leader), and Subhas Chandra Bose (more militant approach) were all key figures, among many others, in the fight for independence."
+                },
+                {
+                    question: "The first Prime Minister of India was __________.",
+                    options: ["Jawaharlal Nehru", "Indira Gandhi", "Mahatma Gandhi", "Rajiv Gandhi"],
+                    answer: "Jawaharlal Nehru",
+                    explanation: "Jawaharlal Nehru became the first Prime Minister of independent India on August 15, 1947, and held the office until his death in 1964."
+                },
+                {
+                    question: "The ancient Indian game of chess, known as \"Chaturanga,\" originated during which time period?",
+                    options: ["Gupta period", "Vedic period", "Mauryan period", "Mughal period"],
+                    answer: "Gupta period",
+                    explanation: "Chaturanga, meaning 'four divisions' (of the military: infantry, cavalry, elephantry, and chariotry), is considered the ancestor of modern chess and originated during the Gupta Empire."
+                },
+                {
+                    question: "The traditional Indian system of medicine, which emphasizes a holistic approach to health, is known as __________.",
+                    options: ["All of the above", "Ayurveda", "Siddha", "Unani"],
+                    answer: "All of the above",
+                    explanation: "Ayurveda, Siddha, and Unani are all traditional systems of medicine practiced in India. Ayurveda is the most widely known, but all are part of India's traditional medical heritage."
+                },
+                {
+                    question: "The Indian state of Kerala is known for its traditional martial art form called __________.",
+                    options: ["Kalaripayattu", "Kathakali", "Bharatanatyam", "Odissi"],
+                    answer: "Kalaripayattu",
+                    explanation: "Kalaripayattu, originating in ancient South India, is one of the oldest surviving martial arts in the world and is a celebrated part of Kerala's cultural heritage."
+                },
+                {
+                    question: "The famous rock-cut temples of Ellora were built during the reign of which dynasty?",
+                    options: ["Rashtrakuta dynasty", "Chola dynasty", "Pallava dynasty", "Hoysala dynasty"],
+                    answer: "Rashtrakuta dynasty",
+                    explanation: "The most famous structure at Ellora, the monolithic Kailasa Temple, was built by King Krishna I of the Rashtrakuta dynasty in the 8th century CE."
+                },
+                {
+                    question: "The Konark Sun Temple, a UNESCO World Heritage Site, is located in which Indian state?",
+                    options: ["Odisha", "Madhya Pradesh", "Rajasthan", "Maharashtra"],
+                    answer: "Odisha",
+                    explanation: "This 13th-century temple, built in the shape of a giant chariot, is located in Konark, Odisha, and is dedicated to the Sun God, Surya."
+                },
+                {
+                    question: "The famous poet and playwright Kalidasa lived during the reign of which ancient Indian dynasty?",
+                    options: ["Gupta dynasty", "Maurya dynasty", "Chola dynasty", "Vijayanagara dynasty"],
+                    answer: "Gupta dynasty",
+                    explanation: "Kalidasa, renowned for his plays like 'Shakuntala', is considered one of the greatest Sanskrit poets and is associated with the court of Chandragupta II during the Gupta 'Golden Age'."
+                },
+                // Note: Duplicate question from doc, included for completeness
+                {
+                    question: "The famous rock-cut temples of Ellora were built during the reign of which dynasty?",
+                    options: ["Rashtrakuta dynasty", "Chola dynasty", "Pallava dynasty", "Hoysala dynasty"],
+                    answer: "Rashtrakuta dynasty",
+                    explanation: "The most famous structure at Ellora, the monolithic Kailasa Temple, was built by King Krishna I of the Rashtrakuta dynasty in the 8th century CE."
+                },
+                {
+                    question: "The official language of the Maurya Empire was __________.",
+                    options: ["Prakrit", "Sanskrit", "Pali", "Tamil"],
+                    answer: "Prakrit", // Magadhi Prakrit was the court language
+                    explanation: "While Sanskrit was the language of religion and learning, the administrative language of the Maurya Empire, used in Ashoka's edicts, was a form of Prakrit (Magadhi Prakrit)."
+                },
+                {
+                    question: "The Golden Age of ancient Indian culture and arts flourished under the patronage of which dynasty?",
+                    options: ["Gupta dynasty", "Mughal dynasty", "Maurya dynasty", "Chola dynasty"],
+                    answer: "Gupta dynasty",
+                    explanation: "The Gupta period (c. 320-550 CE) is known as the 'Golden Age' for its remarkable achievements in art, architecture, literature, science, and mathematics."
+                },
+                {
+                    question: "The city of Agra, known for the Taj Mahal, served as the capital of which Mughal emperor?",
+                    options: ["Shah Jahan", "Akbar", "Aurangzeb", "Babur"],
+                    answer: "Shah Jahan", // Also Akbar, but Shah Jahan is most associated
+                    explanation: "While Akbar founded the modern city of Agra, Shah Jahan built its most famous landmarks, including the Taj Mahal and the Agra Fort, and ruled from there."
+                },
+                {
+                    question: "The Battle of Plassey in 1757 was fought between the forces of the British East India Company and __________.",
+                    options: ["Bengal Sultanate", "Mughal Empire", "Maratha Empire", "Sikh Empire"],
+                    answer: "Bengal Sultanate", // Specifically, the Nawab of Bengal
+                    explanation: "The battle was fought against Siraj-ud-Daulah, the last independent Nawab (ruler) of the Bengal Sultanate, leading to British control of the region."
+                },
+                {
+                    question: "The Swadeshi movement, which aimed at promoting Indian-made products, was a part of the __________.",
+                    options: ["Non-Cooperation Movement", "Quit India Movement", "Civil Disobedience Movement", "Khilafat Movement"],
+                    answer: "Non-Cooperation Movement", // It started earlier (1905), but was a key part of Non-Cooperation
+                    explanation: "The Swadeshi movement began in 1905 to protest the partition of Bengal, but its principle of boycotting foreign goods and promoting Indian products was a core component of the later Non-Cooperation Movement (1920-22)."
+                },
+                {
+                    question: "The Dandi March, a significant event in the Indian independence movement, was led by __________.",
+                    options: ["Mahatma Gandhi", "Subhas Chandra Bose", "Jawaharlal Nehru", "Bhagat Singh"],
+                    answer: "Mahatma Gandhi",
+                    explanation: "In 1930, Mahatma Gandhi led the Dandi March (or Salt March) to the Arabian Sea coast to produce salt in protest against the British salt monopoly, sparking the Civil Disobedience Movement."
+                },
+                {
+                    question: "The Indian state of Tamil Nadu is known for its classical dance form called __________.",
+                    options: ["Bharatanatyam", "Kathak", "Manipuri", "Kuchipudi"],
+                    answer: "Bharatanatyam",
+                    explanation: "Bharatanatyam is a major classical dance form that originated in the temples of Tamil Nadu and is known for its grace, purity, and intricate gestures."
+                },
+                {
+                    question: "The city of Varanasi is considered a holy site in which two major religions?",
+                    options: ["Hinduism and Buddhism", "Hinduism and Jainism", "Buddhism and Sikhism", "Jainism and Sikhism"],
+                    answer: "Hinduism and Buddhism",
+                    explanation: "Varanasi (Kashi) is one of the holiest cities in Hinduism, located on the Ganges. It is also where the Buddha is said to have given his first sermon at nearby Sarnath, making it sacred for Buddhists."
+                },
+                {
+                    question: "The Red Fort, a historic fort complex in Delhi, was constructed by which Mughal emperor?",
+                    options: ["Shah Jahan", "Aurangzeb", "Akbar", "Jahangir"],
+                    answer: "Shah Jahan",
+                    explanation: "Emperor Shah Jahan built the Red Fort (Lal Qila) as the palace fort of his new capital, Shahjahanabad (Old Delhi), and completed it in 1648."
+                },
+                {
+                    question: "The ancient city of Hampi, a UNESCO World Heritage Site, was the capital of which empire?",
+                    options: ["Vijayanagara Empire", "Chola Empire", "Pallava Empire", "Hoysala Empire"],
+                    answer: "Vijayanagara Empire",
+                    explanation: "Hampi, located in modern-day Karnataka, was the magnificent capital of the powerful Vijayanagara Empire from the 14th to the 16th century."
+                },
+                {
+                    question: "The Sanchi Stupa, an important Buddhist monument, is located in which Indian state?",
+                    options: ["Madhya Pradesh", "Bihar", "Uttar Pradesh", "Maharashtra"],
+                    answer: "Madhya Pradesh",
+                    explanation: "The Great Stupa at Sanchi, originally commissioned by Emperor Ashoka in the 3rd century BCE, is one of the oldest and most important Buddhist monuments in India, located near Bhopal, Madhya Pradesh."
+                },
+                {
+                    question: "The Jallianwala Bagh massacre, a tragic incident during the British colonial rule, took place in which Indian city?",
+                    options: ["Amritsar", "Mumbai", "Kolkata", "Lahore"],
+                    answer: "Amritsar",
+                    explanation: "On April 13, 1919, British troops under General Dyer fired on a peaceful crowd of unarmed Indians gathered in Jallianwala Bagh, Amritsar, killing hundreds."
+                },
+                {
+                    question: "The Indian National Army (INA), also known as the Azad Hind Fauj, was formed by __________.",
+                    options: ["Subhas Chandra Bose", "Mahatma Gandhi", "Jawaharlal Nehru", "Bhagat Singh"],
+                    answer: "Subhas Chandra Bose",
+                    explanation: "Subhas Chandra Bose revived and led the INA in 1943 during World War II, with the aim of securing Indian independence from British rule with the help of Axis powers."
+                },
+                {
+                    question: "The first President of India was __________.",
+                    options: ["Rajendra Prasad", "Jawaharlal Nehru", "Indira Gandhi", "Dr. B.R. Ambedkar"],
+                    answer: "Rajendra Prasad",
+                    explanation: "Rajendra Prasad, a prominent independence activist, served as the president of the Constituent Assembly and became the first President of the Republic of India in 1950."
+                },
+                {
+                    question: "The state of Punjab was divided during the partition of India, with a portion going to __________.",
+                    options: ["Pakistan", "Bangladesh", "Nepal", "Sri Lanka"],
+                    answer: "Pakistan",
+                    explanation: "The partition of British India in 1947 led to the division of the Punjab province, with West Punjab becoming part of Pakistan and East Punjab becoming part of India."
+                },
+                {
+                    question: "The Quit India Movement was launched in which year?",
+                    options: ["1942", "1945", "1947", "1950"],
+                    answer: "1942",
+                    explanation: "Mahatma Gandhi launched the Quit India Movement in August 1942, demanding an end to British rule in India. It was a mass civil disobedience movement."
+                },
+                {
+                    question: "The Constituent Assembly of India adopted the Constitution of India in which year?",
+                    options: ["1949", "1947", "1950", "1952"],
+                    answer: "1949", // Adopted Nov 26, 1949. Came into effect Jan 26, 1950.
+                    explanation: "The Constitution of India was adopted by the Constituent Assembly on November 26, 1949, and it came into effect on January 26, 1950."
+                },
+                {
+                    question: "The city of Mumbai was previously known by which name during the British colonial rule?",
+                    options: ["Bombay", "Madras", "Calcutta", "Chennai"],
+                    answer: "Bombay",
+                    explanation: "The city's name was officially changed from Bombay (its colonial-era name) to Mumbai in 1995 to reflect its Marathi heritage."
+                },
+                {
+                    question: "The Indian state of Rajasthan is known for its vibrant folk dance form called __________.",
+                    options: ["Ghoomar", "Bhangra", "Garba", "Kathakali"],
+                    answer: "Ghoomar",
+                    explanation: "Ghoomar is a traditional folk dance of Rajasthan, performed by women in flowing dresses, involving graceful spinning movements."
+                },
+                {
+                    question: "The famous Ajanta and Ellora Caves are located in which Indian state?",
+                    options: ["Maharashtra", "Karnataka", "Uttar Pradesh", "Tamil Nadu"],
+                    answer: "Maharashtra",
+                    explanation: "These two complexes of rock-cut cave monuments, one Buddhist (Ajanta) and the other a mix of Buddhist, Hindu, and Jain (Ellora), are located in the Aurangabad district of Maharashtra."
+                },
+                {
+                    question: "The Rigveda, the oldest of the Vedas, is composed in which ancient Indian language?",
+                    options: ["Sanskrit", "Prakrit", "Pali", "Tamil"],
+                    answer: "Sanskrit",
+                    explanation: "The Rigveda was composed in Vedic Sanskrit, an older form of the Sanskrit language."
+                },
+                {
+                    question: "The Mahabharata is an ancient Indian epic that tells the story of a great __________.",
+                    options: ["War", "Journey", "Love story", "Spiritual quest"],
+                    answer: "War",
+                    explanation: "The central narrative of the Mahabharata is the Kurukshetra War, fought between two groups of cousins, the Pandavas and the Kauravas."
+                },
+                {
+                    question: "The festival of Raksha Bandhan celebrates the bond between __________.",
+                    options: ["Brothers and sisters", "Parents and children", "Husband and wife", "Friends and relatives"],
+                    answer: "Brothers and sisters",
+                    explanation: "On Raksha Bandhan, sisters tie a sacred thread (rakhi) on their brothers' wrists, symbolizing their love and the brothers' vow to protect them."
+                },
+                {
+                    question: "The famous Sun Temple at Konark is dedicated to which Hindu deity?",
+                    options: ["Sun God (Surya)", "Lord Shiva", "Lord Vishnu", "Lord Brahma"],
+                    answer: "Sun God (Surya)",
+                    explanation: "The temple is designed as a colossal chariot for Surya, the Hindu Sun God, complete with 24 wheels and seven horses."
+                },
+                {
+                    question: "Takshashila, an ancient center of learning, is located in present-day:",
+                    options: ["Pakistan", "India", "Afghanistan", "Nepal"],
+                    answer: "Pakistan",
+                    explanation: "The archaeological ruins of Takshashila (Taxila) are located in the Punjab province of modern-day Pakistan."
+                },
+                {
+                    question: "Takshashila University is associated with the famous ancient Indian scholar:",
+                    options: ["Chanakya", "Aryabhata", "Nagarjuna", "Kalidasa"],
+                    answer: "Chanakya",
+                    explanation: "Chanakya (Kautilya), the author of the Arthashastra, is said to have both studied and taught at Takshashila."
+                },
+                {
+                    question: "Which ancient Indian philosopher is credited with establishing the philosophical school of Nyaya?",
+                    options: ["Gotama Maharishi", "Adi Shankaracharya", "Charaka", "Gautama Buddha"],
+                    answer: "Gotama Maharishi",
+                    explanation: "Gotama Maharishi (also known as Akshapada Gotama) is the author of the *Nyaya Sutras*, the foundational text of the Nyaya school, which focuses on logic and epistemology."
+                },
+                {
+                    question: "The ancient Indian text \"Nalanda Mahavira\" provides insights into:",
+                    options: ["The history of Nalanda University", "The principles of non-violence", "The art of warfare and strategy", "Vedic mathematics and astronomy"],
+                    answer: "The history of Nalanda University",
+                    explanation: "The term 'Nalanda Mahavihara' refers to the great monastery (university) itself. Texts and inscriptions *about* it describe its history, curriculum, and structure."
+                },
+                {
+                    question: "The transition from hunting-gathering to agriculture in ancient India led to the development of:",
+                    options: ["Urban civilizations", "Advanced trade routes", "Metalworking techniques", "The caste system"],
+                    answer: "Urban civilizations",
+                    explanation: "Agricultural surpluses allowed for permanent settlements, population growth, and specialization of labor, which were the necessary foundations for the rise of urban civilizations like Harappa."
+                },
+                {
+                    question: "The concept of \"Yajna\" in ancient Vedic society was associated with:",
+                    options: ["Fire sacrifices and rituals", "Hunting rituals", "Agricultural festivals", "Temple construction"],
+                    answer: "Fire sacrifices and rituals",
+                    explanation: "Yajna is a central ritual in Vedic tradition, involving offerings made into a consecrated fire, believed to be a means of communicating with and nourishing the deities."
+                },
+                {
+                    question: "The agricultural treatise \"Kautilya's Arthashastra\" provides insights into:",
+                    options: ["Techniques for irrigation and water management", "Architecture and temple construction", "Military strategies and warfare", "Medicine and healing practices"],
+                    answer: "Techniques for irrigation and water management",
+                    explanation: "While primarily about statecraft, the Arthashastra covers all aspects of managing a state, including agriculture, and discusses the importance and construction of waterworks like reservoirs and canals."
+                },
+                {
+                    question: "The Upanishads are a collection of texts that primarily explore:",
+                    options: ["Mystical and philosophical concepts", "Social and political issues in ancient India", "The life of Lord Krishna", "Agricultural practices and techniques"],
+                    answer: "Mystical and philosophical concepts",
+                    explanation: "The Upanishads form the philosophical core of Hinduism, moving from Vedic rituals to profound mystical concepts like Brahman (ultimate reality) and Atman (the self)."
+                },
+                {
+                    question: "The term \"Jataka\" in ancient Indian literature refers to:",
+                    options: ["Fables and folktales", "Treatises on agriculture", "Sacred rituals and hymns", "Ancient medical texts"],
+                    answer: "Fables and folktales", // Specifically, stories of Buddha's previous lives
+                    explanation: "The Jataka tales are a voluminous body of literature, primarily fables and folktales, that narrate the previous births of Gautama Buddha."
+                },
+                {
+                    question: "The Rigveda primarily consists of:",
+                    options: ["Philosophical hymns and prayers", "Rituals and ceremonies", "Historical accounts of ancient India", "Love poetry and epics"],
+                    answer: "Philosophical hymns and prayers",
+                    explanation: "The Rigveda is a collection of 1,028 hymns (sūktas) and 10,600 verses, organized into ten books (mandalas), which are primarily prayers and hymns dedicated to various deities."
+                },
+                {
+                    question: "The concept of \"Atman\" in the Upanishads refers to:",
+                    options: ["The eternal soul or self", "The ruler of a kingdom", "A sacred dance form", "A type of Vedic sacrifice"],
+                    answer: "The eternal soul or self",
+                    explanation: "Atman is a central concept in Hindu philosophy, representing the true, eternal self or soul of an individual, which is ultimately identical to Brahman (the ultimate reality)."
+                },
+                {
+                    question: "The character of Draupadi in the Mahabharata is known for her exceptional skills in:",
+                    options: ["Diplomacy and statecraft", "Archery", "Singing and dancing", "Healing and medicine"],
+                    answer: "Diplomacy and statecraft", // This is a subjective interpretation, but the most plausible
+                    explanation: "Draupadi is a strong and intelligent character who often provides wise counsel and engages in sharp political and diplomatic dialogue, especially during the Pandavas' exile."
+                },
+                {
+                    question: "The Iron Pillar of Delhi, known for its rust-resistant composition, dates back to the time of __________.",
+                    options: ["Gupta dynasty", "Chandragupta Maurya", "Ashoka the Great", "Harsha Vardhana"],
+                    answer: "Gupta dynasty",
+                    explanation: "An inscription on the pillar identifies a king named 'Chandra,' who is widely believed to be the Gupta Emperor Chandragupta II (c. 375-415 CE)."
+                },
+                {
+                    question: "The term \"Dharma\" in ancient Indian context refers to __________.",
+                    options: ["Religious duty and righteousness", "Social status and caste", "Political power and authority", "Material wealth and prosperity"],
+                    answer: "Religious duty and righteousness",
+                    explanation: "Dharma is a complex concept encompassing one's religious duties, moral responsibilities, and the cosmic order that upholds righteousness and balance in the universe."
+                },
+                {
+                    question: "Which ancient Indian civilization is known for its well-planned cities and advanced drainage systems?",
+                    options: ["Harappa", "Mohenjo-Daro", "Vedic civilization", "Mauryan Empire"],
+                    answer: "Harappa", // Harappa and Mohenjo-Daro are cities of the same civilization
+                    explanation: "The Harappan Civilization (or Indus Valley Civilization) is famous for its sophisticated urban planning, with grid-like streets and the world's first known urban sanitation and drainage systems."
+                },
+                {
+                    question: "The ancient Indian text \"Arthashastra\" primarily focuses on:",
+                    options: ["Statecraft and political governance", "Religious rituals and ceremonies", "Astrological predictions", "Trade and commerce in ancient India"],
+                    answer: "Statecraft and political governance",
+                    explanation: "The Arthashastra, written by Chanakya, is a comprehensive treatise on how to be an effective ruler, covering politics, economics, military strategy, and administration."
+                },
+                {
+                    question: "The ancient Indian term \"Janapada\" refers to:",
+                    options: ["A republic or territorial state", "A class of Vedic priests", "An advanced form of agricultural tools", "A sacred dance form in ancient India"],
+                    answer: "A republic or territorial state",
+                    explanation: "Janapadas were the major kingdoms and republics of Vedic India, meaning 'foothold of a tribe' (jana = people/tribe, pada = foot). They were the precursors to the larger Mahajanapadas."
+                },
+                {
+                    question: "The \"Aranyakas\" in ancient Vedic literature are associated with:",
+                    options: ["Forest dwellers and hermits", "Rituals and sacrifices", "Rules of warfare", "Art and architecture"],
+                    answer: "Forest dwellers and hermits",
+                    explanation: "Aranyakas, or 'forest books,' are part of the Vedas. They discuss dangerous rituals and philosophical concepts intended to be studied in the seclusion of the forest by hermits and ascetics."
+                },
+                {
+                    question: "The ancient Indian system of education, where students lived with their teachers in an ashram, was known as:",
+                    options: ["Gurukula", "University", "Madrasa", "Monastery"],
+                    answer: "Gurukula",
+                    explanation: "The Gurukula ('home of the guru') was a traditional education system where students lived with or near their guru, serving them and receiving personalized instruction."
+                },
+                {
+                    question: "Nalanda University was a renowned center for the study of:",
+                    options: ["Buddhism and other subjects", "Medicine and surgery", "Astronomy and astrology", "Vedic literature and rituals"],
+                    answer: "Buddhism and other subjects",
+                    explanation: "While it was a great center for Mahayana Buddhism, Nalanda's curriculum was vast, also including the Vedas, logic, grammar, medicine, and philosophy."
+                },
+                {
+                    question: "The decline of Nalanda University was primarily due to:",
+                    options: ["Invasion and destruction by foreign armies", "Lack of funding and support from rulers", "Emergence of other competing universities", "Internal conflicts and disputes among scholars"],
+                    answer: "Invasion and destruction by foreign armies",
+                    explanation: "Nalanda was sacked and destroyed by an army of the Mamluk Dynasty under Bakhtiyar Khilji around 1200 CE, an event that marked a sharp decline in Buddhism in India."
+                },
+                {
+                    question: "Makar Sankranti is celebrated to mark the transition of the Sun into which zodiac sign?",
+                    options: ["Capricorn", "Aries", "Cancer", "Libra"],
+                    answer: "Capricorn",
+                    explanation: "Makar Sankranti is a harvest festival that marks the sun's entry into the 'Makara' (Capricorn) zodiac sign, signifying the end of winter and the start of longer days."
+                },
+                {
+                    question: "The Great Bath, an important structure in the ancient city of Mohenjo-daro, was used for __________.",
+                    options: ["Ritual bathing", "Drinking water", "Animal sacrifices", "Community gatherings"],
+                    answer: "Ritual bathing",
+                    explanation: "The sophisticated construction and central location of the Great Bath strongly suggest it was not for simple hygiene but for public, ceremonial use, likely related to ritual purification."
+                }
+            ],
             unit2: [
-                // Unit 2 data
+                // Unit 2 data (existing)
                 {
                     question: "___ is the scientific techniques and methods used to analyze substances like juices, dyes, paints, and cements?",
                     options: [ "Metallurgy", "Laboratory Technology", "Glass Technology", "Marine Technology" ],
@@ -704,21 +1295,522 @@
                 }
             ],
             unit3: [
-                // Add your Unit 3 questions here
+                // Source: IKS _ MCQ _ UNIT III.docx
                 {
-                    question: "This is a placeholder for Unit 3, Question 1. What is...?",
-                    options: [ "Option A", "Option B", "Option C", "Option D" ],
-                    answer: "Option A",
-                    explanation: "This is the explanation for the Unit 3 placeholder question."
-                }
-            ],
-            unit4: [
-                // Add your Unit 4 questions here
+                    question: "Which is not the element of \"Panchamahabhutas”?",
+                    options: ["Energy", "Earth & Water", "Fire & Air", "Ether"],
+                    answer: "Energy",
+                    explanation: "The Panchamahabhutas (five great elements) are Earth (Prithvi), Water (Jala), Fire (Agni), Air (Vayu), and Ether/Space (Akasha). Energy is a property or force, not one of these foundational elements."
+                },
                 {
-                    question: "This is a placeholder for Unit 4, Question 1. Who...?",
-                    options: [ "Answer 1", "Answer 2", "Answer 3", "Answer 4" ],
-                    answer: "Answer 2",
-                    explanation: "This is the explanation for the Unit 4 placeholder question."
+                    question: "Which ancient Indian sage proposed the concept of the atom?",
+                    options: ["Kanada", "Aryabhata", "Brahmagupta", "Charaka"],
+                    answer: "Kanada",
+                    explanation: "Maharishi Kanada, the founder of the Vaisheshika school of philosophy, proposed the concept of 'Anu' (atom) as the smallest, indivisible particle of matter."
+                },
+                {
+                    question: "According to Indian knowledge system, what is the source of all life?",
+                    options: ["Prana", "Karma", "Maya", "Dharma"],
+                    answer: "Prana",
+                    explanation: "Prana is the vital life force or energy that is believed to flow through all living beings, sustaining them. It is the fundamental source of all life."
+                },
+                {
+                    question: "Which ancient Indian text contains detailed descriptions of the universe?",
+                    options: ["Vedas", "Upanishads", "Mahabharata", "Ramayana"],
+                    answer: "Vedas",
+                    explanation: "The Vedas, particularly the Rigveda (e.g., in the Nasadiya Sukta), contain hymns and verses that speculate on the origin and structure of the universe (cosmology)."
+                },
+                {
+                    question: "What is the force that holds the universe together, according to Indian knowledge system?",
+                    options: ["Dharma", "Gravity", "Electromagnetism", "Karma"],
+                    answer: "Dharma",
+                    explanation: "Dharma is the principle of cosmic order that upholds the universe. It is the law of righteousness and duty that maintains balance and harmony."
+                },
+                {
+                    question: "Sage Agastya's model of battery was based on which natural phenomenon?",
+                    options: ["Electricity", "Magnetism", "Gravity", "Sound waves"],
+                    answer: "Electricity",
+                    explanation: "The *Agastya Samhita* is a text that some interpretations claim describes a method for generating electricity (vidyut) using an earthen pot, copper plates, and other materials."
+                },
+                {
+                    question: "In the Indian knowledge system, which sage is associated with Vimāna, the concept of aeronautics?",
+                    options: ["Maharishi Bharadwaja", "Maharishi Bhrigu", "Maharishi Vasistha", "Maharishi Kanva"],
+                    answer: "Maharishi Bharadwaja",
+                    explanation: "Maharishi Bharadwaja is the reputed author of the *Vaimanika Shastra*, a text (which may be of modern origin) that claims to describe ancient flying machines (Vimānas)."
+                },
+                {
+                    question: "What is the Indian term for the ancient Vedic concept of cosmology?",
+                    options: ["Vedanga", "Samhita", "Upanishad", "Brahmana"],
+                    answer: "Vedanga", // Jyotisha is a Vedanga
+                    explanation: "The study of astronomy and cosmology is part of 'Jyotisha', which is one of the six 'Vedangas' (limbs or auxiliary disciplines of the Vedas)."
+                },
+                {
+                    question: "According to Indian knowledge system, what is the approximate velocity of light?",
+                    options: ["3 lakh yojanas per blink of an eye", "300,000 meters per second", "186,000 miles per second", "1 parsec per hour"],
+                    answer: "3 lakh yojanas per blink of an eye", // Based on Sayana's commentary on Rigveda
+                    explanation: "This is based on a 14th-century commentary on the Rigveda by Sayana. His calculation, when converted to modern units, is remarkably close to the actual speed of light."
+                },
+                {
+                    question: "The concept of zero was first introduced by which ancient Indian mathematician?",
+                    options: ["Brahmagupta", "Bhaskara II", "Aryabhata", "Ramanujan"],
+                    answer: "Brahmagupta", // Aryabhata used a placeholder, but Brahmagupta established rules for its use.
+                    explanation: "While Aryabhata used a placeholder concept, Brahmagupta, in his 7th-century text *Brahmasphutasiddhanta*, was the first to formalize zero as a number and establish rules for its use in arithmetic operations."
+                },
+                {
+                    question: "Which ancient Indian mathematician is credited with the discovery of the mathematical constant π (pi)?",
+                    options: ["Aryabhata", "Bhaskara II", "Brahmagupta", "Ramanujan"],
+                    answer: "Aryabhata",
+                    explanation: "In his book *Aryabhatiya* (499 CE), Aryabhata provided a very accurate approximation for pi (π) as 3.1416 and stated it was 'approximate'."
+                },
+                {
+                    question: "What is the base of the number system used in ancient Indian mathematics?",
+                    options: ["Base 10", "Base 2", "Base 8", "Base 16"],
+                    answer: "Base 10",
+                    explanation: "The Indian numeral system, which is the ancestor of the modern Hindu-Arabic system, was a positional decimal (base 10) system."
+                },
+                {
+                    question: "Which theorem, attributed to Pythagoras, was known in ancient Indian mathematics?",
+                    options: ["Pythagorean theorem", "Brahmagupta's theorem", "Fermat's Last Theorem", "Euclidean theorem"],
+                    answer: "Pythagorean theorem", // Known in the Sulbasutras
+                    explanation: "The principle of the Pythagorean theorem was described in the *Sulbasutras* (c. 800-500 BCE) by Baudhayana, long before Pythagoras, for the purpose of constructing geometrically precise fire altars."
+                },
+                {
+                    question: "Which ancient Indian mathematician is known for developing Vedic Mathematics?",
+                    options: ["Śrī Bharati Kṛṣhṇa Tīrtha", "Aryabhata", "Brahmagupta", "Bhaskara II"],
+                    answer: "Śrī Bharati Kṛṣhṇa Tīrtha",
+                    explanation: "'Vedic Mathematics' is a modern system of calculation techniques compiled by Swami Bharati Krishna Tirtha in the early 20th century, which he claimed was based on ancient Vedic sutras."
+                },
+                {
+                    question: "The Indian mathematician Aryabhata is known for his work on which branch of mathematics?",
+                    options: ["Trigonometry", "Algebra", "Geometry", "Calculus"],
+                    answer: "Trigonometry",
+                    explanation: "Aryabhata's *Aryabhatiya* contains one of the earliest known tables of sine (jyā) values, which is a fundamental concept in trigonometry."
+                },
+                {
+                    question: "What is the approximate circumference of the Earth, as calculated by ancient Indian astronomers?",
+                    options: ["39,968 kilometers", "30,000 kilometers", "50,000 kilometers", "60,000 kilometers"],
+                    answer: "39,968 kilometers", // Aryabhata's calculation was remarkably close.
+                    explanation: "Aryabhata calculated the Earth's circumference as 4,967 yojanas. Using the common conversion of ~8 miles per yojana, his value is very close to the modern accepted figure (approx. 40,075 km)."
+                },
+                {
+                    question: "What is the name of the ancient Indian text that describes the history and culture of astronomy?",
+                    options: ["Surya Siddhanta", "Siddhnatha siromani", "Aryabhatiya", "Brahma Sphuta Siddhanta"],
+                    answer: "Surya Siddhanta",
+                    explanation: "The *Surya Siddhanta* is a foundational treatise on Indian astronomy, presenting calculations for planetary motions, eclipses, and other astronomical phenomena."
+                },
+                {
+                    question: "Which celestial body is considered the source of light and energy in the Indian knowledge system?",
+                    options: ["Sun", "Moon", "Earth", "Jupiter"],
+                    answer: "Sun",
+                    explanation: "The Sun (Surya) is revered as a deity and the primary source of light, warmth, and energy that sustains life on Earth."
+                },
+                {
+                    question: "Which celestial body is believed to influence human emotions and behavior according to Indian astrology?",
+                    options: ["Moon", "Mercury", "Venus", "Mars"],
+                    answer: "Moon",
+                    explanation: "In Jyotisha (Indian astrology), the Moon (Chandra) governs the mind, emotions, and sensitivities, and its position is considered highly influential."
+                },
+                {
+                    question: "What causes a solar eclipse, according to the Indian knowledge system?",
+                    options: ["Moon passing between the Sun and the Earth", "Earth passing between the Sun and the Moon", "Alignment of the planets in the solar system", "Random cosmic events"],
+                    answer: "Moon passing between the Sun and the Earth",
+                    explanation: "Ancient Indian astronomers like Aryabhata correctly understood that solar eclipses (Surya Grahan) are caused by the Moon's shadow falling on the Earth, rather than by mythical demons (Rahu/Ketu)."
+                },
+                {
+                    question: "What is the scientific term for the spinning of the Earth on its axis?",
+                    options: ["Rotation", "Revolution", "Orbit", "Precession"],
+                    answer: "Rotation",
+                    explanation: "Rotation refers to the spinning of an object on its own axis. The Earth's rotation causes the cycle of day and night. 'Revolution' is its orbit around the Sun."
+                },
+                {
+                    question: "What is the value of zero in the ancient Indian numeral system?",
+                    options: ["Shunya", "Ek", "Dash", "Gyarah"],
+                    answer: "Shunya",
+                    explanation: "'Shunya' is the Sanskrit word for 'void' or 'emptiness', which was used to name the concept and numeral for zero."
+                },
+                {
+                    question: "What is the value of pi (π) in the Indian mathematical system?",
+                    options: ["3.1416", "3", "3 1/7", "Infinite"],
+                    answer: "3.1416", // Aryabhata's approximation
+                    explanation: "This specific approximation (62832/20000) was given by the 5th-century mathematician Aryabhata."
+                },
+                {
+                    question: "Which Indian mathematician is known for his contributions to the concept of infinity?",
+                    options: ["Bhaskara II", "Ramanujan", "Aryabhata", "Brahmagupta"],
+                    answer: "Bhaskara II",
+                    explanation: "In the 12th century, Bhaskara II (Bhaskaracharya) stated that dividing a number by zero results in a quantity called 'khahara', or infinity."
+                },
+                {
+                    question: "What is the square of the hypotenuse in a right-angled triangle, according to the Pythagorean theorem?",
+                    options: ["Sum of the squares of the other two sides", "Difference of the squares of the other two sides", "Product of the other two sides", "Division of the other two sides"],
+                    answer: "Sum of the squares of the other two sides",
+                    explanation: "This theorem, known as the Baudhayana theorem in the *Sulbasutras*, states that for a right-angled triangle, a² + b² = c², where 'c' is the hypotenuse (the longest side)."
+                },
+                {
+                    question: "The concept of Vedic mathematics is based on which ancient Indian texts?",
+                    options: ["Vedas", "Upanishads", "Mahabharata", "Ramayana"],
+                    answer: "Vedas",
+                    explanation: "The modern system of 'Vedic Mathematics' was compiled by Swami Bharati Krishna Tirtha, who claimed its 16 sutras (aphorisms) were appendices found in the Atharvaveda."
+                },
+                {
+                    question: "Which ancient Indian mathematician is known for his contributions to the concept of zero?",
+                    options: ["Brahmagupta", "Aryabhata", "Bhaskara II", "Ramanujan"],
+                    answer: "Brahmagupta",
+                    explanation: "Brahmagupta (7th century CE) was the first to provide systematic rules for arithmetic operations (addition, subtraction, multiplication, and division) involving zero."
+                },
+                {
+                    question: "What is the value of e (the base of the natural logarithm) in the Indian mathematical system?",
+                    options: ["2.718", "2", "3", "3.1416"],
+                    answer: "2.718",
+                    explanation: "This is the modern, universally accepted value of 'e'. While Indian mathematicians developed related concepts like infinite series, the constant 'e' itself was not explicitly defined in ancient texts."
+                },
+                {
+                    question: "Which Indian mathematician is known for his discovery of the Fibonacci sequence?",
+                    options: ["Virahanka", "Bhaskara II", "Brahmagupta", "Hemachandra"],
+                    answer: "Virahanka", // Also Hemachandra
+                    explanation: "The sequence of 'mātrā-meru' (patterns in poetry) was discussed by the poet Virahanka (c. 700 CE) and later by Hemachandra, centuries before Fibonacci."
+                },
+                {
+                    question: "What is the sum of all angles in a triangle, according to Euclidean geometry?",
+                    options: ["180 degrees", "90 degrees", "270 degrees", "360 degrees"],
+                    answer: "180 degrees",
+                    explanation: "This is a fundamental property of triangles in flat (Euclidean) space."
+                },
+                {
+                    question: "What is the sum of all angles in a quadrilateral, according to Euclidean geometry?",
+                    options: ["360 degrees", "90 degrees", "180 degrees", "270 degrees"],
+                    answer: "360 degrees",
+                    explanation: "A quadrilateral can always be divided into two triangles, and since each triangle's angles sum to 180 degrees, the total is 180 + 180 = 360 degrees."
+                },
+                {
+                    question: "Which ancient Indian mathematician is known for his work on algebraic equations?",
+                    options: ["Brahmagupta", "Aryabhata", "Bhaskara II", "Ramanujan"],
+                    answer: "Brahmagupta",
+                    explanation: "Brahmagupta gave the first general solution for linear equations and also provided solutions for certain types of quadratic equations in his 7th-century work."
+                },
+                {
+                    question: "Which Indian mathematician is known for his work on the concept of logarithms?",
+                    options: ["Bhaskara II", "Aryabhata", "Brahmagupta", "Srinivasa Ramanujan"],
+                    answer: "Bhaskara II", // Logarithm concepts were implicitly used.
+                    explanation: "While the modern concept of logarithms came later, Bhaskara II and other medieval Indian mathematicians worked with related concepts, such as rules for powers and roots, that are foundational to logarithms."
+                },
+                {
+                    question: "Who is best known for his stupendous work in quantum mechanics?",
+                    options: ["Satyendra nath bose", "Hemachandra", "Ramanujan", "Bhaskara II"],
+                    answer: "Satyendra nath bose",
+                    explanation: "Satyendra Nath Bose was a 20th-century Indian physicist whose work on quantum statistics (Bose-Einstein statistics) defined a class of particles known as 'bosons'."
+                },
+                {
+                    question: "What is the concept of the zeroth law of thermodynamics?",
+                    options: ["Heat flow and temperature equilibrium", "Conservation of energy", "Entropy and disorder", "Quantum mechanics"],
+                    answer: "Heat flow and temperature equilibrium",
+                    explanation: "The Zeroth Law states that if two systems are each in thermal equilibrium with a third system, then they are in thermal equilibrium with each other. This defines the concept of temperature."
+                },
+                {
+                    question: "Which Indian mathematician is known for his contributions to the concept of complex numbers?",
+                    options: ["Srinivasa Ramanujan", "Aryabhata", "Brahmagupta", "Bhaskara II"],
+                    answer: "Srinivasa Ramanujan",
+                    explanation: "While complex numbers were known earlier (e.g., Bhaskara II noted the issue with negative square roots), the 20th-century mathematician Ramanujan did extensive and profound work in number theory that involved complex analysis."
+                },
+                {
+                    question: "According to Indian knowledge system, what is the ultimate reality?",
+                    options: ["Brahman", "Atman", "Maya", "Karma"],
+                    answer: "Brahman",
+                    explanation: "In Vedanta philosophy, Brahman is the single, ultimate, unchanging reality that exists beyond the material universe."
+                },
+                {
+                    question: "According to Indian knowledge system, which of these is not the cause of all suffering?",
+                    options: ["Jealousy", "Ignorance", "Fear", "Ego"],
+                    answer: "Jealousy", // Ignorance (Avidya) is the root cause.
+                    explanation: "In philosophies like Buddhism and Advaita Vedanta, the root cause of all suffering is 'Avidya' (ignorance) of our true nature, which gives rise to ego, fear, attachment, and aversion. Jealousy is a symptom, not the root cause."
+                },
+                {
+                    question: "What is the ancient Indian term for the study of time and its measurement?",
+                    options: ["Kala Vidya", "Moksha", "Samsara", "Karma"],
+                    answer: "Kala Vidya",
+                    explanation: "'Kala' is the Sanskrit word for time, and 'Vidya' means knowledge or science. 'Kala Vidya' refers to the science of time."
+                },
+                {
+                    question: "Who proposed the concept of Sankhya philosophy in the Indian knowledge system?",
+                    options: ["Kapila", "Kanada", "Charaka", "Sushruta"],
+                    answer: "Kapila",
+                    explanation: "The sage Kapila is traditionally credited as the founder of the Sankhya school, one of the six orthodox schools of Hindu philosophy, which presents a dualistic view of reality (Purusha and Prakriti)."
+                },
+                {
+                    question: "According to Indian knowledge system, what is the purpose of human life?",
+                    options: ["Self-realization and liberation", "Material success", "Pleasure and enjoyment", "Serving society"],
+                    answer: "Self-realization and liberation",
+                    explanation: "The ultimate goal, or 'Purushartha', is considered 'Moksha' (liberation) from the cycle of birth and death (Samsara), which is achieved through self-realization (Atma Jnana)."
+                },
+                {
+                    question: "Who proposed the concept of Ayurveda in the Indian knowledge system?",
+                    options: ["Charaka", "Kanada", "Sushruta", "Patanjali"],
+                    answer: "Charaka",
+                    explanation: "Charaka is one of the principal contributors to Ayurveda. His work, the *Charaka Samhita*, is a foundational text on this traditional system of medicine."
+                },
+                {
+                    question: "According to Indian knowledge system, what is the ultimate goal of yoga?",
+                    options: ["Self-realization and union with the divine", "Physical fitness", "Mental peace", "Physical fitness"],
+                    answer: "Self-realization and union with the divine",
+                    explanation: "The word 'Yoga' means 'to yoke' or 'union'. The ultimate goal is 'Moksha' (liberation), achieved by uniting the individual consciousness (Atman) with the universal consciousness (Brahman)."
+                },
+                {
+                    question: "Who is considered the father of Indian mathematics?",
+                    options: ["Aryabhata", "Brahmagupta", "Bhaskara II", "Pingala"],
+                    answer: "Aryabhata",
+                    explanation: "Aryabhata (5th century CE) is often given this title due to his foundational contributions to arithmetic, algebra, and trigonometry, most notably in his work *Aryabhatiya*."
+                },
+                {
+                    question: "What is the Indian term for the concept of \"cosmic order\" or \"universal harmony\"?",
+                    options: ["Dharma", "Karma", "Moksha", "Maya"],
+                    answer: "Dharma",
+                    explanation: "Dharma is the underlying principle of cosmic order and righteousness that governs the universe, nature, and human conduct."
+                },
+                {
+                    question: "Vedic Maths primarily deals with which of the following?",
+                    options: ["Arithmetic and Algebra", "Algebra and Geometry", "Trigonometry and Calculus", "Calculus and Probability"],
+                    answer: "Arithmetic and Algebra",
+                    explanation: "The 16 sutras of the modern 'Vedic Mathematics' system are primarily techniques for fast mental calculation in arithmetic (multiplication, division) and algebra (solving equations)."
+                },
+                {
+                    question: "How many main Vedic Sutras (aphorisms) are there in Vedic Mathematics?",
+                    options: ["16", "12", "24", "8"],
+                    answer: "16",
+                    explanation: "The system of 'Vedic Mathematics' compiled by Swami Bharati Krishna Tirtha is based on 16 main sutras (aphorisms) and 13 sub-sutras."
+                },
+                {
+                    question: "Which Vedic Sutra is used for multiplication?",
+                    options: ["Urdhva-Tiryagbhyam Sutra", "Nikhilam Sutra", "Anurupyena Sutra", "Paravartya Yojayet Sutra"],
+                    answer: "Urdhva-Tiryagbhyam Sutra",
+                    explanation: "'Urdhva-Tiryagbhyam' means 'Vertically and Crosswise' and is a general method for multiplication taught in the Vedic Mathematics system."
+                },
+                {
+                    question: "Vedic Maths includes techniques for quick calculations using which number system?",
+                    options: ["Decimal Number System", "Binary Number System", "Octal Number System", "Base 10 Number System"],
+                    answer: "Decimal Number System", // Also Base 10
+                    explanation: "The techniques are designed to work within the decimal (base 10) number system, which is the standard system for everyday calculations."
+                },
+                {
+                    question: "Vedic Maths is known for promoting mental calculations and:",
+                    options: ["Speed and accuracy in calculations", "Abacus usage", "Paper and pencil methods", "Use of slide rule"],
+                    answer: "Speed and accuracy in calculations",
+                    explanation: "The primary benefit attributed to these techniques is that they simplify complex calculations, allowing them to be performed mentally with greater speed and accuracy."
+                },
+                {
+                    question: "What does the term \"Vimāna\" refer to in Indian texts?",
+                    options: ["Aerial vehicles or flying machines", "Water vessels used for trading", "Ancient weapons of war", "Sacred temples"],
+                    answer: "Aerial vehicles or flying machines",
+                    explanation: "In ancient Sanskrit epics like the Ramayana and Mahabharata, 'Vimāna' refers to mythical flying palaces or chariots used by the gods."
+                },
+                {
+                    question: "According to ancient Indian texts, Vimānas were used for:",
+                    options: ["Aerial vehicles or flying machines", "Water vessels used for trading", "Ancient weapons of war", "Sacred temples"],
+                    answer: "Aerial vehicles or flying machines",
+                    explanation: "(Duplicate) In ancient Sanskrit epics like the Ramayana and Mahabharata, 'Vimāna' refers to mythical flying palaces or chariots used by the gods."
+                },
+                {
+                    question: "According to ancient Indian texts, Vimānas were used for:",
+                    options: ["Aerial travel and transportation", "Underwater exploration", "Agricultural purposes", "Religious ceremonies"],
+                    answer: "Aerial travel and transportation",
+                    explanation: "These mythical flying machines were described as being used by deities and epic heroes for travel and transportation through the air."
+                },
+                {
+                    question: "Which ancient Indian epic mentions Vimānas and their usage in battles?",
+                    options: ["Ramayana", "Mahabharata", "Bhagavad Gita", "Rigveda"],
+                    answer: "Ramayana", // Also Mahabharata
+                    explanation: "The Ramayana mentions the 'Pushpaka Vimāna', which was originally built by Vishwakarma for Brahma, later held by Kubera, and then stolen and used by the demon king Ravana."
+                },
+                {
+                    question: "Who is often credited with building and using Vimānas in ancient Indian mythology?",
+                    options: ["Devas (Gods) and Rishis (Sages)", "Demons (Asuras) and Nagas (Serpents)", "Kings and Warriors", "Brahmins (Priests) and Scholars"],
+                    answer: "Devas (Gods) and Rishis (Sages)",
+                    explanation: "In mythology, Vimānas are primarily vehicles of the Devas (gods). They are also associated with great sages (Rishis) and divine architects like Vishwakarma or Maya."
+                },
+                {
+                    question: "The concept of Vimānas is most prominently found in which ancient Indian scriptures?",
+                    options: ["Vedas and Puranas", "Upanishads", "Manusmriti", "Aranyakas"],
+                    answer: "Vedas and Puranas",
+                    explanation: "Descriptions of Vimānas are found in the Vedas, the great epics (Ramayana, Mahabharata), and extensively in the Puranas."
+                },
+                {
+                    question: "The term \"Vimāna\" is derived from which Sanskrit word?",
+                    options: ["Vimaan", "Vayu", "Vriksha", "Vahana"],
+                    answer: "Vimaan",
+                    explanation: "The word 'Vimāna' (विमान) itself is a Sanskrit word, often translated as 'measuring out' or 'traversing', and is used to mean 'aircraft' or 'chariot of the gods'."
+                },
+                {
+                    question: "The descriptions of Vimānas are also found in texts from which other ancient civilization?",
+                    options: ["Sumerian", "Egyptian", "Chinese", "Greek"],
+                    answer: "Sumerian",
+                    explanation: "While Vimānas are specific to Indian texts, proponents of ancient astronaut theories often draw parallels to descriptions of flying 'chariots' or 'ships' in other mythologies, such as Sumerian."
+                },
+                {
+                    question: "Which archaeological discovery supported the possibility of ancient batteries like the one described by Sage Agastya?",
+                    options: ["The Mohenjo-Daro excavations", "The Harappa excavations", "The Ajanta Caves inscriptions", "The Ajanta Caves inscriptions"],
+                    answer: "The Mohenjo-Daro excavations", // This is questionable, but refers to the "Baghdad Battery" which is unrelated to Agastya. This question is likely flawed.
+                    explanation: "This is a point of confusion. The discovery that is often (and controversially) cited is the 'Baghdad Battery,' an artifact from Mesopotamia (not Mohenjo-Daro), which some speculate was an ancient galvanic cell."
+                },
+                {
+                    question: "The concept of Sage Agastya's battery is also associated with ancient Indian knowledge in the field of:",
+                    options: ["Alchemy", "Architecture", "Medicine", "Astronomy"],
+                    answer: "Alchemy",
+                    explanation: "Ancient Indian 'Rasayana' (a branch of Ayurveda) and alchemy involved the use of minerals and metals, and texts like the *Agastya Samhita* are sometimes linked to these alchemical traditions."
+                },
+                {
+                    question: "According to Agastya Samhita, what applications were envisioned for the battery's electricity?",
+                    options: ["Illumination and electroplating", "Transportation and communication", "Weather prediction and rainmaking", "Healing and curing diseases"],
+                    answer: "Illumination and electroplating",
+                    explanation: "Interpretations of the text suggest the generated electricity ('vidyut') could be used for 'mitra' (illumination) and for electroplating (covering one metal with another, 'water-coating')."
+                },
+                {
+                    question: "What is the historical significance of Sage Agastya's battery?",
+                    options: ["It is considered an early example of battery technology", "It was used to power ancient temples", "It was used in warfare", "It was used for medical purposes"],
+                    answer: "It is considered an early example of battery technology",
+                    explanation: "If the interpretations are correct, the *Agastya Samhita* would represent one of the earliest conceptual descriptions of a battery (galvanic cell)."
+                },
+                {
+                    question: "What is the approximate time period for which the battery can produce electricity, as mentioned in the Agastya Samhita?",
+                    options: ["A few minutes", "A few days", "A few weeks", "A few weeks"],
+                    answer: "A few minutes",
+                    explanation: "A simple galvanic cell of this type, known as a voltaic pile, would only produce a low voltage for a relatively short period."
+                },
+                {
+                    question: "For generating electricity, Sage Agastya has not used the following material:",
+                    options: ["Magnesium", "Copper plate", "Copper sulphate", "One earthen pot"],
+                    answer: "Magnesium",
+                    explanation: "The text is interpreted as describing an earthen pot, a copper plate, a zinc sheet ('shatru'), and copper sulphate ('mayur tutha'). Magnesium is not mentioned."
+                },
+                {
+                    question: "According to Sage Agastya's model, what is the primary material used to construct the battery?",
+                    options: ["Copper", "Gold", "Iron", "Silver"],
+                    answer: "Copper",
+                    explanation: "The described model uses a copper plate (tamra patra) as a key component (the cathode) in the electrochemical cell."
+                },
+                {
+                    question: "Vedic cosmology divides the universe into how many main realms or lokas?",
+                    options: ["7", "5", "6", "11"],
+                    answer: "7",
+                    explanation: "Hindu cosmology often describes seven upper realms, or 'Lokas' (Bhu, Bhuva, Svar, Mahar, Jana, Tapa, Satya), and sometimes seven lower realms (Patalas)."
+                },
+                {
+                    question: "Which of the following is a concept in Vedic cosmology that correlates with the modern idea of the Big Bang theory?",
+                    options: ["Hiranyagarbha", "Samsara", "Purusha", "Brahma"],
+                    answer: "Hiranyagarbha",
+                    explanation: "The 'Hiranyagarbha' (Golden Womb or Golden Egg) is a concept from the Rigveda describing the origin of the universe from a single, cosmic seed or egg, which some compare to the Big Bang singularity."
+                },
+                {
+                    question: "The Vedic concept of \"Yugas\" corresponds to which modern scientific concept?",
+                    options: ["Geological ages", "Solar eclipses", "Seasons", "Lunar phases"],
+                    answer: "Geological ages",
+                    explanation: "The Yuga Cycle (Satya, Treta, Dvapara, Kali) describes vast ages of time with distinct characteristics, which is conceptually similar to how modern science divides Earth's history into geological ages."
+                },
+                {
+                    question: "According to Vedic cosmology, the Earth is considered to be:",
+                    options: ["A sphere", "Flat", "Hollow", "Pyramid-shaped"],
+                    answer: "A sphere",
+                    explanation: "While early texts contain various cosmologies, later astronomical texts like the *Aryabhatiya* and *Surya Siddhanta* explicitly describe the Earth ('Bhugola') as a sphere."
+                },
+                {
+                    question: "According to Vedic cosmology, the universe is believed to be:",
+                    options: ["Infinite and cyclical", "Finite and linear", "Expanding exponentially", "Static and unchanging"],
+                    answer: "Infinite and cyclical",
+                    explanation: "Hindu cosmology describes a universe that is cyclical, undergoing endless cycles of creation (srishti) and dissolution (pralaya)."
+                },
+                {
+                    question: "In ancient Indian astronomy, what term is used for the study of astronomical positions, movements, and timekeeping?",
+                    options: ["Jyotish", "Ayurveda", "Tantra", "Vedanta"],
+                    answer: "Jyotish",
+                    explanation: "'Jyotisha' (or Jyotishya) is the traditional Hindu system of astronomy and astrology, one of the six Vedangas. 'Jyoti' means 'light' (as in, of celestial bodies)."
+                },
+                {
+                    question: "The ancient Indian text \"Surya Siddhanta\" deals with the study of:",
+                    options: ["Astronomy and Sun", "Earthquakes and Volcanoes", "Lunar cycles and Tides", "Solar energy and Sustainable development"],
+                    answer: "Astronomy and Sun",
+                    explanation: "The *Surya Siddhanta* (Knowledge from the Sun) is a foundational treatise on astronomy, detailing calculations for the Sun's, Moon's, and planets' positions and movements."
+                },
+                {
+                    question: "In Indian astronomy, what term is used for the equinox, when the length of day and night is approximately equal?",
+                    options: ["Vishuva", "Diwali", "Pongal", "Makar Sankranti"],
+                    answer: "Vishuva",
+                    explanation: "'Vishuva' is the Sanskrit term for the equinox (both vernal and autumnal). 'Maha Vishuva Sankranti' marks the vernal equinox."
+                },
+                {
+                    question: "The \"Jantar Mantar\" observatories in Jaipur, Delhi, and other cities were built during the reign of which Indian king?",
+                    options: ["Maharaja Sawai Jai Singh II", "Ashoka the Great", "Akbar the Great", "Chandragupta Maurya"],
+                    answer: "Maharaja Sawai Jai Singh II",
+                    explanation: "Maharaja Sawai Jai Singh II of Jaipur, a keen astronomer, constructed five Jantar Mantar observatories in the early 18th century to compile accurate astronomical tables."
+                },
+                {
+                    question: "In Indian astronomical tradition, what term is used for the \"lunar mansion,\" which is one of the 27 divisions of the zodiac?",
+                    options: ["Nakshatra", "Mahalaya", "Samvatsara", "Veda"],
+                    answer: "Nakshatra",
+                    explanation: "The 'Nakshatras' are 27 (or sometimes 28) divisions of the sky along the ecliptic, based on the Moon's daily position, and are a key component of Indian astrology."
+                },
+                {
+                    question: "What ancient Indian mathematician and astronomer is known for his groundbreaking work \"Aryabhatiya\"?",
+                    options: ["Aryabhata", "Brahmagupta", "Bhaskara II", "Varahamihira"],
+                    answer: "Aryabhata",
+                    explanation: "Aryabhata's only surviving work, the *Aryabhatiya* (499 CE), is a comprehensive summary of mathematics and astronomy, covering topics like pi, trigonometry, and the causes of eclipses."
+                },
+                {
+                    question: "The \"Kerala school of astronomy and mathematics\" made significant contributions to trigonometry and developed what concept in calculus?",
+                    options: ["Infinite series", "Quadratic equations", "Pythagorean theorem", "Exponential growth"],
+                    answer: "Infinite series",
+                    explanation: "From the 14th to 16th centuries, mathematicians of the Kerala school (like Madhava) developed infinite series expansions for trigonometric functions, pre-dating their European discovery."
+                },
+                {
+                    question: "The \"Chandra Grahan\" and \"Surya Grahan\" are the Indian terms for:",
+                    options: ["Lunar Eclipse and Solar Eclipse, respectively", "Comet and Meteor, respectively", "Planets and Stars, respectively", "Equinox and Solstice, respectively"],
+                    answer: "Lunar Eclipse and Solar Eclipse, respectively",
+                    explanation: "'Chandra' means Moon and 'Surya' means Sun. 'Grahan' means 'seizing' or 'eclipse'. Thus, Chandra Grahan is a lunar eclipse and Surya Grahan is a solar eclipse."
+                },
+                {
+                    question: "In Indian astronomy, the \"Zodiac\" is divided into how many equal parts, each known as a \"Rashi\"?",
+                    options: ["12", "27", "9", "36"],
+                    answer: "12",
+                    explanation: "Like the Western zodiac, the Indian zodiac is divided into 12 'Rashis' (signs), such as 'Mesha' (Aries), 'Vrishabha' (Taurus), etc., each spanning 30 degrees of the ecliptic."
+                },
+                {
+                    question: "Which number system uses only two symbols, 0 and 1, to represent all values?",
+                    options: ["Binary Number System", "Decimal Number System", "Octal Number System", "Roman Numeral System"],
+                    answer: "Binary Number System",
+                    explanation: "The binary (base 2) system is the foundation of modern computing, using only the digits 0 and 1. The concept of binary was discussed by the Indian scholar Pingala in his *Chandahshastra* (c. 2nd century BCE) in the context of poetic meters."
+                },
+                {
+                    question: "Pythagoras Theorem is used to find the relationship between the sides of which type of triangle?",
+                    options: ["Right-angled Triangle", "Equilateral Triangle", "Isosceles Triangle", "Scalene Triangle"],
+                    answer: "Right-angled Triangle",
+                    explanation: "The theorem (a² + b² = c²) specifically applies only to triangles that contain one 90-degree (right) angle."
+                },
+                {
+                    question: "Which number system has a base of 16 and uses the symbols 0-9 and A-F to represent values?",
+                    options: ["Hexadecimal Number System", "Decimal Number System", "Binary Number System", "Octal Number System"],
+                    answer: "Hexadecimal Number System",
+                    explanation: "Hexadecimal (base 16) is commonly used in computing as a more human-readable way to represent binary data."
+                },
+                {
+                    question: "The hypotenuse of a right-angled triangle can be found using Pythagoras Theorem, which states:",
+                    options: ["c² = a² + b²", "a² + b² = c²", "a² = b² * c²", "b² - c² = a²"],
+                    answer: "c² = a² + b²", // a and b are other two sides, c is hypotenuse. Also a²+b²=c²
+                    explanation: "This formula states that the square of the hypotenuse ('c') is equal to the sum of the squares of the other two sides ('a' and 'b')."
+                },
+                {
+                    question: "Which ancient Indian sage is credited with formulating the concept of \"Sankhya,\" a philosophical system that discusses the nature of the universe and matter?",
+                    options: ["Kapila", "Vyasa", "Patanjali", "Gautama"],
+                    answer: "Kapila",
+                    explanation: "The sage Kapila is the traditional founder of the Sankhya school of philosophy, which posits a dualism between consciousness (Purusha) and matter/nature (Prakriti)."
+                },
+                {
+                    question: "The theory of \"Akasha\" in Indian thought refers to:",
+                    options: ["The cosmic space or ether", "The physical body (Deha)", "The realm of the gods (Devaloka)", "The process of self-realization (Atma Jnana)"],
+                    answer: "The cosmic space or ether",
+                    explanation: "Akasha is the fifth of the Panchamahabhutas (five great elements), representing ether, space, or the all-pervading medium that carries sound."
+                },
+                {
+                    question: "According to Indian cosmology, the present age is known as:",
+                    options: ["Kali Yuga", "Satya Yuga", "Treta Yuga", "Dvapara Yuga"],
+                    answer: "Kali Yuga",
+                    explanation: "In the Hindu cycle of four Yugas, the Kali Yuga is the final and current age, characterized by conflict, strife, and a decline in dharma."
                 }
             ]
         };
@@ -728,15 +1820,18 @@
         const startScreen = document.getElementById('start-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const endScreen = document.getElementById('end-screen');
+        const reviewScreen = document.getElementById('review-screen'); // New Review Screen
 
         const unitSelect = document.getElementById('unit-select');
         const modePracticeBtn = document.getElementById('mode-practice');
-        const modeTestBtn = document.getElementById('mode-test');
-        const modeReviewBtn = document.getElementById('mode-review'); // New button
+        const modeReviewBtn = document.getElementById('mode-review');
         const startBtn = document.getElementById('start-btn');
         
         const restartBtn = document.getElementById('restart-btn');
         const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn'); // New Previous Button
+        const homeBtnQuiz = document.getElementById('home-btn-quiz'); // New Home Button (Quiz)
+        const homeBtnReview = document.getElementById('home-btn-review'); // New Home Button (Review)
 
         const progressText = document.getElementById('progress-text');
         const progressBar = document.getElementById('progress-bar');
@@ -753,14 +1848,15 @@
         const finalScoreText = document.getElementById('final-score-text');
         const percentageText = document.getElementById('percentage-text');
         const finalMessage = document.getElementById('final-message');
-        const reviewContainer = document.getElementById('review-container');
+        
+        const reviewContainer = document.getElementById('review-container-main'); // New Review Container
+        const reviewTitle = document.getElementById('review-title');
 
         // --- STATE ---
         let currentQuizData = []; // Will hold the questions for the selected unit
-        let currentMode = 'practice'; // 'practice', 'test', or 'review'
+        let currentMode = 'practice'; // 'practice' or 'review'
         let currentQuestionIndex = 0;
         let score = 0;
-        let userAnswers = []; // To store answers for Test Mode
 
         // --- FUNCTIONS ---
 
@@ -783,15 +1879,12 @@
         function setMode(mode) {
             currentMode = mode;
             modePracticeBtn.classList.remove('selected');
-            modeTestBtn.classList.remove('selected');
             modeReviewBtn.classList.remove('selected');
             scoreTextLive.classList.add('hidden'); // Hide score by default
 
             if (mode === 'practice') {
                 modePracticeBtn.classList.add('selected');
                 scoreTextLive.classList.remove('hidden'); // Show score for practice
-            } else if (mode === 'test') {
-                modeTestBtn.classList.add('selected');
             } else if (mode === 'review') {
                 modeReviewBtn.classList.add('selected');
             }
@@ -805,22 +1898,86 @@
             currentQuizData = allQuizData[selectedUnit];
             
             // Check if unit has questions
-            if (currentQuizData.length === 0) {
-                alert("This unit does not have any questions yet. Please add questions to the 'allQuizData' object in the script.");
+            if (!currentQuizData || currentQuizData.length === 0) {
+                alert("This unit does not have any questions yet.");
                 return;
             }
 
             startScreen.classList.add('hidden');
             endScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-
-            currentQuestionIndex = 0;
-            score = 0;
-            userAnswers = new Array(currentQuizData.length).fill(null); // Reset answers
             
-            showQuestion();
-            updateLiveScore();
+            if (currentMode === 'review') {
+                // --- REVIEW MODE ---
+                reviewTitle.textContent = `Review Mode: ${unitSelect.options[unitSelect.selectedIndex].text}`;
+                quizScreen.classList.add('hidden');
+                reviewScreen.classList.remove('hidden');
+                buildReviewPage();
+            } else {
+                // --- PRACTICE MODE ---
+                reviewScreen.classList.add('hidden');
+                quizScreen.classList.remove('hidden');
+                currentQuestionIndex = 0;
+                score = 0;
+                showQuestion();
+                updateLiveScore();
+            }
         }
+
+        /**
+         * Builds the single-page review for Review Mode
+         */
+        function buildReviewPage() {
+            reviewContainer.innerHTML = ''; // Clear old review
+            
+            currentQuizData.forEach((question, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'p-4 rounded-lg bg-gray-50 border border-gray-200';
+                
+                let optionsHTML = '<ul class="mt-3 space-y-2">';
+                question.options.forEach(option => {
+                    if (option === question.answer) {
+                        optionsHTML += `
+                            <li class="flex items-center text-green-700 font-medium p-2 bg-green-100 rounded border border-green-300">
+                                <ion-icon name="checkmark-circle-outline" class="mr-2 text-xl"></ion-icon>
+                                ${option} (Correct)
+                            </li>
+                        `;
+                    } else {
+                        optionsHTML += `
+                            <li class="flex items-center text-gray-700 ml-8">
+                                ${option}
+                            </li>
+                        `;
+                    }
+                });
+                optionsHTML += '</ul>';
+                
+                // --- MODIFIED PART: Add explanation ---
+                let explanationHTML = '';
+                if (question.explanation) {
+                    explanationHTML = `
+                        <div class="mt-4 pt-3 border-t border-gray-200">
+                            <h5 class="font-semibold text-gray-800">Explanation:</h5>
+                            <p class="text-gray-700">${question.explanation}</p>
+                        </div>
+                    `;
+                }
+                // --- END MODIFIED PART ---
+
+                reviewItem.innerHTML = `
+                    <h4 class="font-semibold text-lg text-gray-900">${index + 1}. ${question.question}</h4>
+                    ${optionsHTML}
+                    ${explanationHTML} 
+                `;
+                reviewContainer.appendChild(reviewItem);
+            });
+        }
+
+
+        /**
+         * Displays the current question and SHUFFLED options.
+         */
+
 
         /**
          * Displays the current question and SHUFFLED options.
@@ -830,6 +1987,15 @@
             feedbackArea.classList.add('hidden');
             nextBtn.classList.add('hidden');
             nextBtn.textContent = 'Next'; // Reset button text
+
+            // Enable/disable Previous button
+            prevBtn.disabled = (currentQuestionIndex === 0);
+            if (prevBtn.disabled) {
+                prevBtn.classList.add('btn-neutral:disabled');
+            } else {
+                prevBtn.classList.remove('btn-neutral:disabled');
+            }
+
 
             // Get current question data
             const questionData = currentQuizData[currentQuestionIndex];
@@ -843,42 +2009,19 @@
 
             // Clear old options and create new SHUFFLED ones
             optionsContainer.innerHTML = '';
-            // Don't shuffle for review mode, but shuffle for practice/test
-            const optionsToShow = (currentMode === 'review') 
-                ? [...questionData.options] 
-                : shuffle([...questionData.options]);
+            const optionsToShow = shuffle([...questionData.options]);
 
             optionsToShow.forEach(option => {
                 const button = document.createElement('button');
                 button.textContent = option;
-                button.className = 'option-btn w-full bg-gray-700 hover:bg-gray-600 text-gray-200 text-left p-4 rounded-lg border-2 border-gray-600';
-                
-                if (currentMode === 'review') {
-                    button.disabled = true; // Disable buttons in review mode
-                    if (option === questionData.answer) {
-                        button.classList.add('correct'); // Highlight correct answer
-                    }
-                } else {
-                    button.onclick = () => selectAnswer(option, button); // Add click handler only for practice/test
-                }
+                button.className = 'option-btn w-full text-left p-4 rounded-lg';
+                button.onclick = () => selectAnswer(option, button); // Add click handler
                 optionsContainer.appendChild(button);
             });
-
-            // Handle Review Mode specifics
-            if (currentMode === 'review') {
-                feedbackTitle.textContent = "Correct Answer & Explanation";
-                feedbackTitle.className = "text-lg font-bold mb-2 text-green-400";
-                feedbackExplanation.textContent = questionData.explanation;
-                feedbackArea.classList.remove('hidden');
-                nextBtn.classList.remove('hidden');
-                if (currentQuestionIndex === currentQuizData.length - 1) {
-                    nextBtn.textContent = 'Finish Review';
-                }
-            }
         }
 
         /**
-         * Handles the user's answer selection (Practice and Test modes only).
+         * Handles the user's answer selection (Practice mode only).
          */
         function selectAnswer(selectedOption, buttonEl) {
             const questionData = currentQuizData[currentQuestionIndex];
@@ -889,38 +2032,38 @@
                 button.disabled = true;
             });
 
-            if (currentMode === 'practice') {
-                // --- Practice Mode Logic ---
-                nextBtn.classList.remove('hidden');
-                
-                if (selectedOption === correctAnswer) {
-                    score++;
-                    buttonEl.classList.add('correct');
-                    feedbackTitle.textContent = "Correct!";
-                    feedbackTitle.className = "text-lg font-bold mb-2 text-green-400";
-                } else {
-                    buttonEl.classList.add('wrong');
-                    feedbackTitle.textContent = "Incorrect";
-                    feedbackTitle.className = "text-lg font-bold mb-2 text-red-400";
-                    // Also show the correct answer
-                    Array.from(optionsContainer.children).forEach(button => {
-                        if (button.textContent === correctAnswer) {
-                            button.classList.add('correct');
-                        }
-                    });
-                }
+            // --- Practice Mode Logic ---
+            nextBtn.classList.remove('hidden');
+            
+            if (selectedOption === correctAnswer) {
+                score++;
+                buttonEl.classList.add('correct');
+                feedbackTitle.textContent = "Correct!";
+                feedbackTitle.className = "text-lg font-bold mb-2 text-green-600";
+            } else {
+                buttonEl.classList.add('wrong');
+                feedbackTitle.textContent = "Incorrect";
+                feedbackTitle.className = "text-lg font-bold mb-2 text-red-600";
+                // Also show the correct answer
+                Array.from(optionsContainer.children).forEach(button => {
+                    if (button.textContent === correctAnswer) {
+                        button.classList.add('correct');
+                    }
+                });
+            }
+            
+            // Show explanation if it exists, otherwise hide
+            if (questionData.explanation) {
                 feedbackExplanation.textContent = questionData.explanation;
                 feedbackArea.classList.remove('hidden');
-                updateLiveScore();
-
             } else {
-                // --- Test Mode Logic ---
-                userAnswers[currentQuestionIndex] = selectedOption;
-                buttonEl.classList.add('selected'); // Highlight selected answer
-                nextBtn.classList.remove('hidden');
-                if (currentQuestionIndex === currentQuizData.length - 1) {
-                    nextBtn.textContent = 'Submit Quiz';
-                }
+                feedbackArea.classList.add('hidden');
+            }
+            
+            updateLiveScore();
+
+            if (currentQuestionIndex === currentQuizData.length - 1) {
+                nextBtn.textContent = 'Finish Quiz';
             }
         }
 
@@ -938,6 +2081,16 @@
         }
         
         /**
+         * Loads the previous question.
+         */
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+        
+        /**
          * Updates the live score display (for Practice Mode).
          */
         function updateLiveScore() {
@@ -950,83 +2103,24 @@
         function showResults() {
             quizScreen.classList.add('hidden');
             endScreen.classList.remove('hidden');
-            reviewContainer.classList.add('hidden'); // Hide review by default
 
-            if (currentMode === 'review') {
-                // --- Review Mode End Screen ---
-                finalTitle.textContent = "Review Complete!";
-                scoreSection.classList.add('hidden'); // Hide score section
-                finalMessage.textContent = `You have reviewed all ${currentQuizData.length} questions. Great job!`;
+            // --- Practice Mode End Screen ---
+            scoreSection.classList.remove('hidden'); // Show score section
+            finalTitle.textContent = "Quiz Complete!";
 
+            // Display Score Summary
+            const percentage = Math.round((score / currentQuizData.length) * 100);
+            finalScoreText.textContent = `${score} / ${currentQuizData.length}`;
+            percentageText.textContent = `(${percentage}%)`;
+
+            if (percentage >= 90) {
+                finalMessage.textContent = "Outstanding! You are an expert!";
+            } else if (percentage >= 75) {
+                finalMessage.textContent = "Excellent job! You really know your stuff.";
+            } else if (percentage >= 50) {
+                finalMessage.textContent = "Good work! You've got a solid foundation.";
             } else {
-                // --- Practice or Test Mode End Screen ---
-                scoreSection.classList.remove('hidden'); // Show score section
-                finalTitle.textContent = "Quiz Complete!";
-
-                // Calculate score *only* for Test Mode (Practice score is already live)
-                if (currentMode === 'test') {
-                    score = 0;
-                    userAnswers.forEach((answer, index) => {
-                        if (answer === currentQuizData[index].answer) {
-                            score++;
-                        }
-                    });
-                }
-                
-                // Display Score Summary
-                const percentage = Math.round((score / currentQuizData.length) * 100);
-                finalScoreText.textContent = `${score} / ${currentQuizData.length}`;
-                percentageText.textContent = `(${percentage}%)`;
-
-                if (percentage >= 90) {
-                    finalMessage.textContent = "Outstanding! You are an expert!";
-                } else if (percentage >= 75) {
-                    finalMessage.textContent = "Excellent job! You really know your stuff.";
-                } else if (percentage >= 50) {
-                    finalMessage.textContent = "Good work! You've got a solid foundation.";
-                } else {
-                    finalMessage.textContent = "Keep practicing! You'll get there.";
-                }
-
-                // Display Review Section for Test Mode
-                if (currentMode === 'test') {
-                    reviewContainer.innerHTML = ''; // Clear old review
-                    const reviewTitle = document.createElement('h2');
-                    reviewTitle.className = 'text-2xl font-bold text-white text-center mb-6';
-                    reviewTitle.textContent = 'Review Your Answers';
-                    reviewContainer.appendChild(reviewTitle);
-
-                    currentQuizData.forEach((question, index) => {
-                        const userAnswer = userAnswers[index];
-                        const isCorrect = userAnswer === question.answer;
-
-                        const reviewItem = document.createElement('div');
-                        reviewItem.className = `p-4 rounded-lg mb-4 ${isCorrect ? 'bg-gray-700' : 'bg-red-900 bg-opacity-30 border border-red-700'}`;
-                        
-                        let reviewHTML = `
-                            <h4 class="font-semibold text-lg mb-3">Question ${index + 1}: ${question.question}</h4>
-                            <p class="text-sm mb-1 ${isCorrect ? 'text-green-400' : 'text-red-400'}">
-                                <ion-icon name="${isCorrect ? 'checkmark-circle' : 'close-circle'}" class="align-middle"></ion-icon>
-                                Your answer: <strong>${userAnswer || 'No answer'}</strong>
-                            </p>
-                        `;
-                        
-                        if (!isCorrect) {
-                            reviewHTML += `
-                                <p class="text-sm mb-2 text-green-400">
-                                    <ion-icon name="checkmark-circle-outline" class="align-middle"></ion-icon>
-                                    Correct answer: F<strong>${question.answer}</strong>
-                                </p>
-                            `;
-                        }
-                        
-                        reviewHTML += `<p class="text-sm text-gray-300 mt-2"><b>Explanation:</b> ${question.explanation}</p>`;
-                        
-                        reviewItem.innerHTML = reviewHTML;
-                        reviewContainer.appendChild(reviewItem);
-                    });
-                    reviewContainer.classList.remove('hidden');
-                }
+                finalMessage.textContent = "Keep practicing! You'll get there.";
             }
         }
         
@@ -1035,6 +2129,8 @@
          */
         function goHome() {
             endScreen.classList.add('hidden');
+            quizScreen.classList.add('hidden');
+            reviewScreen.classList.add('hidden');
             startScreen.classList.remove('hidden');
             // Reset mode to default
             setMode('practice');
@@ -1042,11 +2138,13 @@
 
         // --- EVENT LISTENERS ---
         modePracticeBtn.addEventListener('click', () => setMode('practice'));
-        modeTestBtn.addEventListener('click', () => setMode('test'));
-        modeReviewBtn.addEventListener('click', () => setMode('review')); // New listener
+        modeReviewBtn.addEventListener('click', () => setMode('review'));
         startBtn.addEventListener('click', startQuiz);
         nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
         restartBtn.addEventListener('click', goHome); 
+        homeBtnQuiz.addEventListener('click', goHome);
+        homeBtnReview.addEventListener('click', goHome);
 
         // Set initial mode
         setMode('practice');
@@ -1054,4 +2152,3 @@
     </script>
 </body>
 </html>
-
