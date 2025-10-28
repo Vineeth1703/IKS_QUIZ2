@@ -1,0 +1,122 @@
+html, body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f4f5; /* Tailwind gray-100 */
+    scroll-behavior: smooth; /* Added for smooth scrolling */
+}
+        
+/* Custom styles for option buttons */
+.option-btn {
+    transition: all 0.3s ease;
+    background-color: #ffffff; /* White */
+    border: 2px solid #e5e7eb; /* gray-200 */
+    color: #374151; /* gray-700 */
+}
+.option-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #4338ca; /* indigo-700 */
+}
+/* Added clear focus state for accessibility */
+.option-btn:focus-visible {
+    outline: 2px solid #4338ca;
+    outline-offset: 2px;
+}
+        
+/* Styles for correct/wrong answers (Practice Mode) */
+.option-btn.correct {
+    background-color: #16a34a !important; /* green-600 */
+    border-color: #15803d !important; /* green-700 */
+    color: white !important;
+}
+.option-btn.wrong {
+    background-color: #dc2626 !important; /* red-600 */
+    border-color: #b91c1c !important; /* red-700 */
+    color: white !important;
+}
+        
+.option-btn.selected {
+    background-color: #4338ca !important; /* indigo-700 */
+    border-color: #3730a3 !important; /* indigo-800 */
+    color: white !important;
+}
+        
+.option-btn:disabled {
+    opacity: 0.9;
+    cursor: not-allowed;
+}
+
+/* Style for Mode Selection Cards */
+.mode-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 160px; /* Ensure cards are same height */
+    background: #ffffff;
+    border: 2px solid #e5e7eb; /* gray-200 */
+}
+.mode-card:hover {
+    transform: scale(1.03);
+    border-color: #f97316; /* orange-500 */
+}
+.mode-card.selected {
+    border-color: #4338ca; /* indigo-700 */
+    box-shadow: 0 0 15px rgba(67, 56, 202, 0.3);
+    background-color: #f5f3ff; /* indigo-50 */
+}
+/* Added clear focus state for accessibility */
+.mode-card:focus-visible {
+    outline: 2px solid #f97316;
+    outline-offset: 2px;
+    transform: scale(1.03);
+}
+        
+/* Fade-in animation */
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Primary Button Style (Saffron) */
+.btn-primary {
+     background-color: #f97316; /* orange-500 */
+     color: white;
+}
+.btn-primary:hover:not(:disabled) {
+    background-color: #ea580c; /* orange-600 */
+}
+
+/* Secondary Button Style (Indigo) */
+.btn-secondary {
+    background-color: #4338ca; /* indigo-700 */
+    color: white;
+}
+.btn-secondary:hover:not(:disabled) {
+    background-color: #3730a3; /* indigo-800 */
+}
+        
+/* Neutral Button Style */
+.btn-neutral {
+    background-color: #6b7280; /* gray-500 */
+    color: white;
+}
+.btn-neutral:hover:not(:disabled) {
+    background-color: #4b5563; /* gray-600 */
+}
+.btn-neutral:disabled {
+    background-color: #d1d5db; /* gray-300 */
+    cursor: not-allowed;
+}
+
+/* Home button at top of quiz */
+.home-btn-link {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #4b5563; /* gray-600 */
+    transition: color 0.3s ease;
+}
+.home-btn-link:hover {
+    color: #111827; /* gray-900 */
+}

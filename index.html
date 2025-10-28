@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Knowledge System - Quiz</title>
+    
+        <script src="https://cdn.tailwindcss.com"></script>
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen p-4">
+
+    <div id="app" class="w-full max-w-4xl">
+
+                <div id="start-screen" class="bg-white shadow-xl rounded-lg overflow-hidden fade-in">
+            <div class="p-8 md:p-12 text-center">
+                <div class="w-full py-6 bg-orange-500 -mt-12 -mx-12 mb-10">
+                    <h1 class="text-3xl md:text-4xl font-bold text-white">Indian Knowledge System</h1>
+                    <p class="text-xl md:text-2xl text-orange-100">Quiz Platform</p>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="unit-select" class="block text-lg font-medium text-gray-700 mb-2">1. Select a Unit</label>
+                                        <select id="unit-select" class="w-full bg-gray-50 text-gray-900 border-2 border-gray-300 rounded-lg p-3 text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none">
+                        <option value="unit1">Unit I: Indian History</option>
+                        <option value="unit2">Unit II: Engineering, Technology, and Architecture</option>
+                        <option value="unit3">Unit III: Science, Astronomy & Mathematics</option>
+                    </select>
+                </div>
+
+                <div class="mb-8">
+                    <label class="block text-lg font-medium text-gray-700 mb-2">2. Choose a Mode</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div id="mode-practice" class="mode-card p-6 rounded-lg selected flex flex-col justify-center items-center text-gray-800" role="button" tabindex="0">
+                            <ion-icon name="bulb-outline" class="text-4xl text-yellow-500 mb-2"></ion-icon>
+                            <h3 class="text-xl font-semibold">Practice Mode</h3>
+                            <p class="text-gray-600 text-sm">Get instant feedback after each question.</p>
+                        </div>
+                        <div id="mode-review" class="mode-card p-6 rounded-lg flex flex-col justify-center items-center text-gray-800" role="button" tabindex="0">
+                            <ion-icon name="eye-outline" class="text-4xl text-green-500 mb-2"></ion-icon>
+                            <h3 class="text-xl font-semibold">Review Mode</h3>
+                            <p class="text-gray-600 text-sm">View all questions with their answers.</p>
+                        </div>
+                    </div>
+                </div>
+
+                                <button id="start-btn" class="w-full btn-primary font-bold py-3 px-12 rounded-lg text-lg shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 disabled:opacity-75 disabled:cursor-wait">
+                    <span id="start-btn-text">Start</span>
+                    <span id="start-btn-spinner" class="hidden">
+                        <svg class="animate-spin h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        Loading...
+                    </span>
+                </button>
+            </div>
+        </div>
+
+                <div id="quiz-screen" class="hidden bg-white shadow-xl rounded-lg p-6 md:p-10 max-w-3xl mx-auto fade-in">
+            <div class="flex justify-start items-center mb-6">                 <button id="home-btn-quiz" class="home-btn-link focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded">
+                    <ion-icon name="chevron-back-outline" class="mr-1"></ion-icon>
+                    Back to Home
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span id="progress-text" class="text-sm font-medium text-indigo-700">Question 1 / 85</span>
+                    <span id="score-text-live" class="text-sm font-medium text-gray-600">Score: 0</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-indigo-700 h-2.5 rounded-full transition-all duration-300 ease-out"></div>
+                </div>
+            </div>
+
+            <h2 id="question-text" class="text-xl md:text-2xl font-semibold text-gray-900 mb-6" style="min-height: 6rem;">
+                Question text goes here...
+            </h2>
+
+            <div id="options-container" class="space-y-3 mb-6">
+                            </div>
+
+                        <div id="feedback-area" class="hidden bg-gray-50 border border-gray-200 p-4 rounded-lg fade-in" aria-live="polite">
+                <h3 id="feedback-title" class="text-lg font-bold mb-2"></h3>
+                <p id="feedback-explanation" class="text-gray-700"></p>
+            </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col-reverse sm:flex-row sm:justify-between items-center space-y-4 sm:space-y-0 space-y-reverse">
+                <button id="prev-btn" class="w-full sm:w-auto btn-neutral font-bold py-2 px-8 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2">
+                    Previous
+                </button>
+                <button id="next-btn" class="w-full sm:w-auto hidden btn-secondary font-bold py-2 px-8 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-800 focus:ring-offset-2">
+                    Next
+                </button>
+            </div>
+        </div>
+        
+                <div id="review-screen" class="hidden bg-white shadow-xl rounded-lg p-6 md:p-10 max-w-4xl mx-auto fade-in">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                <h2 id="review-title" class="text-2xl font-bold text-gray-900">Review Mode</h2>
+                <button id="home-btn-review" class="home-btn-link focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded">
+                    <ion-icon name="chevron-back-outline" class="mr-1"></ion-icon>
+                    Back to Home
+                </button>
+            </div>
+            
+            <div id="review-container-main" class="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+                            </div>
+        </div>
+
+                <div id="end-screen" class="hidden bg-white shadow-xl rounded-lg p-8 md:p-12 text-center fade-in max-w-3xl mx-auto">
+            <h1 id="final-title" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Quiz Complete!</h1>
+            
+            <div id="score-section">
+                <p class="text-xl text-gray-600 mb-6">Your final score is:</p>
+                <h2 id="final-score-text" class="text-6xl font-extrabold text-indigo-700 mb-2">30 / 85</h2>
+                <p id="percentage-text" class="text-2xl font-medium text-gray-800 mb-8">(35%)</p>
+                <p id="final-message" class="text-lg text-gray-600 mb-10">Keep practicing. You can do better!</p>
+            </div>
+            
+            <button id="restart-btn" class="mt-8 w-full md:w-auto btn-primary font-bold py-3 px-12 rounded-lg text-lg shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2">
+                Back to Start
+            </button>
+        </div>
+
+    </div>
+
+        <script src="app.js"></script>
+
+</body>
+</html>
