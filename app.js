@@ -381,382 +381,267 @@ const allQuizData = {
     // Add more Unit 3 questions here if you have them (object format)
   ],
 };
+/* ------------------ QUIZ DATA (YOUR UNITS) ------------------ */
+/* keep your full Unit 1, Unit 2 and Unit 3 data here exactly as is */
+const allQuizData = window.allQuizData; // ensure your data remains outside interference
 
-/* ===========================
-   DOM elements
-   =========================== */
-const startScreen = document.getElementById("start-screen");
-const quizScreen = document.getElementById("quiz-screen");
-const endScreen = document.getElementById("end-screen");
-const reviewScreen = document.getElementById("review-screen");
 
-const unitSelect = document.getElementById("unit-select");
-const modePracticeBtn = document.getElementById("mode-practice");
-const modeReviewBtn = document.getElementById("mode-review");
-const startBtn = document.getElementById("start-btn");
-const startBtnText = document.getElementById("start-btn-text");
-const startBtnSpinner = document.getElementById("start-btn-spinner");
+/* ------------------ ELEMENT REFERENCES ------------------ */
+const startScreen = document.getElementById('start-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const endScreen = document.getElementById('end-screen');
+const reviewScreen = document.getElementById('review-screen');
 
-const restartBtn = document.getElementById("restart-btn");
-const nextBtn = document.getElementById("next-btn");
-const prevBtn = document.getElementById("prev-btn");
-const homeBtnQuiz = document.getElementById("home-btn-quiz");
-const homeBtnReview = document.getElementById("home-btn-review");
+const unitSelect = document.getElementById('unit-select');
+const modePracticeBtn = document.getElementById('mode-practice');
+const modeReviewBtn = document.getElementById('mode-review');
+const startBtn = document.getElementById('start-btn');
 
-const progressText = document.getElementById("progress-text");
-const progressBar = document.getElementById("progress-bar");
-const scoreTextLive = document.getElementById("score-text-live");
-const questionText = document.getElementById("question-text");
-const optionsContainer = document.getElementById("options-container");
+const startBtnText = document.getElementById('start-btn-text');
+const startBtnSpinner = document.getElementById('start-btn-spinner');
 
-const feedbackArea = document.getElementById("feedback-area");
-const feedbackTitle = document.getElementById("feedback-title");
-const feedbackExplanation = document.getElementById("feedback-explanation");
+const restartBtn = document.getElementById('restart-btn');
+const nextBtn = document.getElementById('next-btn');
+const prevBtn = document.getElementById('prev-btn');
+const homeBtnQuiz = document.getElementById('home-btn-quiz');
+const homeBtnReview = document.getElementById('home-btn-review');
 
-const finalTitle = document.getElementById("final-title");
-const scoreSection = document.getElementById("score-section");
-const finalScoreText = document.getElementById("final-score-text");
-const percentageText = document.getElementById("percentage-text");
-const finalMessage = document.getElementById("final-message");
+const progressText = document.getElementById('progress-text');
+const progressBar = document.getElementById('progress-bar');
+const scoreTextLive = document.getElementById('score-text-live');
+const questionText = document.getElementById('question-text');
+const optionsContainer = document.getElementById('options-container');
 
-const reviewContainer = document.getElementById("review-container-main");
-const reviewTitle = document.getElementById("review-title");
+const feedbackArea = document.getElementById('feedback-area');
+const feedbackTitle = document.getElementById('feedback-title');
+const feedbackExplanation = document.getElementById('feedback-explanation');
 
-/* ===========================
-   State
-   =========================== */
+const finalScoreText = document.getElementById('final-score-text');
+const percentageText = document.getElementById('percentage-text');
+const finalMessage = document.getElementById('final-message');
+
+const reviewContainerMain = document.getElementById('review-container-main');
+
+
+/* ------------------ STATE ------------------ */
 let currentQuizData = [];
-let currentMode = "practice"; // 'practice' or 'review'
+let currentMode = 'practice';
 let currentQuestionIndex = 0;
 let score = 0;
 
-/* ===========================
-   Utilities
-   =========================== */
-/** Fisher–Yates shuffle */
+
+/* ------------------ UTILS ------------------ */
 function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-/* ===========================
-   Mode handling
-   =========================== */
 function setMode(mode) {
-  currentMode = mode;
-  modePracticeBtn.classList.remove("selected");
-  modeReviewBtn.classList.remove("selected");
-  scoreTextLive.classList.add("hidden");
+    currentMode = mode;
+    modePracticeBtn.classList.remove('selected');
+    modeReviewBtn.classList.remove('selected');
+    scoreTextLive.classList.add('hidden');
 
-  if (mode === "practice") {
-    modePracticeBtn.classList.add("selected");
-    scoreTextLive.classList.remove("hidden");
-  } else if (mode === "review") {
-    modeReviewBtn.classList.add("selected");
-  }
+    if (mode === 'practice') {
+        modePracticeBtn.classList.add('selected');
+        scoreTextLive.classList.remove('hidden');
+    } else {
+        modeReviewBtn.classList.add('selected');
+    }
 }
 
-/* Accessibility: allow Enter/Space to select mode cards */
-function handleModeKey(event) {
-  if (event.key === "Enter" || event.key === " ") {
-    event.preventDefault();
-    const idParts = event.currentTarget.id.split("-");
-    if (idParts.length > 1) setMode(idParts[1]);
-  }
-}
 
-/* ===========================
-   Start quiz
-   =========================== */
+/* ------------------ START QUIZ ------------------ */
 function startQuiz() {
-  // show spinner briefly
-  startBtn.disabled = true;
-  startBtnText.classList.add("hidden");
-  startBtnSpinner.classList.remove("hidden");
+    startBtn.disabled = true;
+    startBtnText.classList.add('hidden');
+    startBtnSpinner.classList.remove('hidden');
 
-  setTimeout(() => {
-    const selectedUnit = unitSelect.value; // e.g., 'unit1'
-    const questions = allQuizData[selectedUnit];
+    setTimeout(() => {
+        const selectedUnit = unitSelect.value;
+        currentQuizData = JSON.parse(JSON.stringify(allQuizData[selectedUnit]));
 
-    if (!questions || !Array.isArray(questions) || questions.length === 0) {
-      alert("This unit does not have any questions yet.");
-      startBtn.disabled = false;
-      startBtnText.classList.remove("hidden");
-      startBtnSpinner.classList.add("hidden");
-      return;
-    }
+        if (!currentQuizData || currentQuizData.length === 0) {
+            alert("No questions available in this unit.");
+            startBtn.disabled = false;
+            startBtnText.classList.remove('hidden');
+            startBtnSpinner.classList.add('hidden');
+            return;
+        }
 
-    // deep copy to avoid mutating source data
-    currentQuizData = JSON.parse(JSON.stringify(questions));
+        startScreen.classList.add('hidden');
 
-    // reset UI
-    startScreen.classList.add("hidden");
-    endScreen.classList.add("hidden");
+        if (currentMode === 'review') {
+            quizScreen.classList.add('hidden');
+            reviewScreen.classList.remove('hidden');
+            buildReviewToolbar(selectedUnit);
+            buildReviewPage(currentQuizData);
+        } else {
+            reviewScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            currentQuestionIndex = 0;
+            score = 0;
+            showQuestion();
+            updateLiveScore();
+        }
 
-    if (currentMode === "review") {
-      reviewTitle.textContent = `Review Mode: ${unitSelect.options[unitSelect.selectedIndex].text}`;
-      quizScreen.classList.add("hidden");
-      reviewScreen.classList.remove("hidden");
-      buildReviewPage();
-    } else {
-      reviewScreen.classList.add("hidden");
-      quizScreen.classList.remove("hidden");
-      currentQuestionIndex = 0;
-      score = 0;
-      showQuestion();
-      updateLiveScore();
-    }
+        startBtn.disabled = false;
+        startBtnText.classList.remove('hidden');
+        startBtnSpinner.classList.add('hidden');
 
-    startBtn.disabled = false;
-    startBtnText.classList.remove("hidden");
-    startBtnSpinner.classList.add("hidden");
-  }, 150);
+    }, 200);
 }
 
-/* ===========================
-   Review page builder
-   =========================== */
-function buildReviewPage() {
-  reviewContainer.innerHTML = "";
 
-  currentQuizData.forEach((question, index) => {
-    const reviewItem = document.createElement("div");
-    reviewItem.className = "p-4 rounded-lg bg-gray-50 border border-gray-200";
+/* ------------------ REVIEW MODE UI (TABS + SEARCH) ------------------ */
+function buildReviewToolbar(activeUnit) {
+    const toolbarHTML = `
+        <div class="flex flex-wrap gap-2 mb-4">
+            ${Object.keys(allQuizData).map(unit =>
+                `<button data-unit="${unit}" class="px-4 py-2 rounded-lg border text-sm font-medium ${unit === activeUnit ? 'bg-indigo-600 text-white' : 'bg-gray-200'} review-unit-btn">${unit.toUpperCase()}</button>`
+            ).join('')}
+        </div>
 
-    let optionsHTML = '<ul class="mt-3 space-y-2">';
-    (question.options || []).forEach((option) => {
-      if (option === question.answer) {
-        optionsHTML += `
-          <li class="flex items-center text-green-700 font-medium p-2 bg-green-100 rounded border border-green-300">
-            <ion-icon name="checkmark-circle-outline" class="mr-2 text-xl"></ion-icon>
-            ${option} (Correct)
-          </li>`;
-      } else {
-        optionsHTML += `
-          <li class="flex items-center text-gray-700 ml-8">
-            ${option}
-          </li>`;
-      }
-    });
-    optionsHTML += "</ul>";
-
-    let explanationHTML = "";
-    if (question.explanation) {
-      explanationHTML = `
-        <div class="mt-4 pt-3 border-t border-gray-200">
-          <h5 class="font-semibold text-gray-800">Explanation:</h5>
-          <p class="text-gray-700">${question.explanation}</p>
-        </div>`;
-    }
-
-    reviewItem.innerHTML = `
-      <h4 class="font-semibold text-lg text-gray-900">${index + 1}. ${question.question}</h4>
-      ${optionsHTML}
-      ${explanationHTML}
+        <input type="text" id="review-search" placeholder="Search questions..." class="w-full p-3 rounded-lg border-2 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 mb-4">
     `;
-    reviewContainer.appendChild(reviewItem);
-  });
-}
 
-/* ===========================
-   Show a single question
-   =========================== */
-function showQuestion() {
-  feedbackArea.classList.add("hidden");
-  nextBtn.classList.add("hidden");
-  nextBtn.textContent = "Next";
+    reviewContainerMain.insertAdjacentHTML('beforebegin', toolbarHTML);
 
-  prevBtn.disabled = currentQuestionIndex === 0;
-
-  const questionData = currentQuizData[currentQuestionIndex];
-  progressText.textContent = `Question ${currentQuestionIndex + 1} / ${currentQuizData.length}`;
-  progressBar.style.width = `${((currentQuestionIndex + 1) / currentQuizData.length) * 100}%`;
-  questionText.textContent = questionData.question;
-
-  optionsContainer.innerHTML = "";
-  const optionsToShow = shuffle([...questionData.options]);
-
-  optionsToShow.forEach((option) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = option;
-    button.className =
-      "option-btn w-full text-left p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1";
-    button.onclick = () => selectAnswer(option, button);
-    optionsContainer.appendChild(button);
-  });
-
-  // If user already answered this question, show previous state
-  if (questionData.userAnswer) {
-    showAnsweredState(questionData);
-  }
-}
-
-/* ===========================
-   Show answered state (if revisited)
-   =========================== */
-function showAnsweredState(questionData) {
-  const correctAnswer = questionData.answer;
-  const userAnswer = questionData.userAnswer;
-
-  Array.from(optionsContainer.children).forEach((button) => {
-    button.disabled = true;
-    if (button.textContent === correctAnswer) {
-      button.classList.add("correct");
-    } else if (button.textContent === userAnswer) {
-      button.classList.add("wrong");
-    }
-  });
-
-  if (userAnswer === correctAnswer) {
-    feedbackTitle.textContent = "Correct! (Already Answered)";
-    feedbackTitle.className = "text-lg font-bold mb-2 text-green-600";
-  } else {
-    feedbackTitle.textContent = "Incorrect (Already Answered)";
-    feedbackTitle.className = "text-lg font-bold mb-2 text-red-600";
-  }
-
-  if (questionData.explanation) {
-    feedbackExplanation.textContent = questionData.explanation;
-    feedbackArea.classList.remove("hidden");
-  }
-
-  nextBtn.classList.remove("hidden");
-  if (currentQuestionIndex === currentQuizData.length - 1) {
-    nextBtn.textContent = "Finish Quiz";
-  }
-}
-
-/* ===========================
-   Handle answer selection (practice mode)
-   =========================== */
-function selectAnswer(selectedOption, buttonEl) {
-  const questionData = currentQuizData[currentQuestionIndex];
-  const correctAnswer = questionData.answer;
-
-  Array.from(optionsContainer.children).forEach((button) => {
-    button.disabled = true;
-  });
-
-  // Only award score on first answer
-  if (!questionData.userAnswer) {
-    if (selectedOption === correctAnswer) {
-      score++;
-      feedbackTitle.textContent = "Correct!";
-      feedbackTitle.className = "text-lg font-bold mb-2 text-green-600";
-    } else {
-      feedbackTitle.textContent = "Incorrect";
-      feedbackTitle.className = "text-lg font-bold mb-2 text-red-600";
-    }
-    questionData.userAnswer = selectedOption;
-  }
-
-  nextBtn.classList.remove("hidden");
-
-  // Visual feedback
-  if (selectedOption === correctAnswer) {
-    buttonEl.classList.add("correct");
-  } else {
-    buttonEl.classList.add("wrong");
-    Array.from(optionsContainer.children).forEach((button) => {
-      if (button.textContent === correctAnswer) {
-        button.classList.add("correct");
-      }
+    document.querySelectorAll('.review-unit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const selectedUnit = btn.getAttribute('data-unit');
+            currentQuizData = JSON.parse(JSON.stringify(allQuizData[selectedUnit]));
+            buildReviewPage(currentQuizData);
+        });
     });
-  }
 
-  if (questionData.explanation) {
-    feedbackExplanation.textContent = questionData.explanation;
-    feedbackArea.classList.remove("hidden");
-  }
-
-  updateLiveScore();
-
-  if (currentQuestionIndex === currentQuizData.length - 1) {
-    nextBtn.textContent = "Finish Quiz";
-  }
+    document.getElementById('review-search').addEventListener('input', function () {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.review-item').forEach(item => {
+            item.style.display = item.innerText.toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
 }
 
-/* ===========================
-   Navigation
-   =========================== */
+
+/* ------------------ DISPLAY REVIEW ------------------ */
+function buildReviewPage(data) {
+    reviewContainerMain.innerHTML = '';
+    data.forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = "review-item p-4 rounded-lg bg-gray-50 border border-gray-200";
+
+        div.innerHTML = `
+            <h4 class="font-semibold text-lg">${i + 1}. ${q.question}</h4>
+            <ul class="mt-2 space-y-1">
+                ${q.options.map(opt =>
+                    `<li class="p-2 rounded ${opt === q.answer ? 'bg-green-100 text-green-700 font-medium' : 'text-gray-700 ml-6'}">${opt}</li>`
+                ).join('')}
+            </ul>
+            <p class="mt-3 text-gray-700 border-t pt-3">${q.explanation || ''}</p>
+        `;
+        reviewContainerMain.appendChild(div);
+    });
+}
+
+
+/* ------------------ PRACTICE MODE QUESTIONS ------------------ */
+function showQuestion() {
+    feedbackArea.classList.add('hidden');
+    nextBtn.classList.add('hidden');
+
+    const q = currentQuizData[currentQuestionIndex];
+    questionText.textContent = q.question;
+    progressText.textContent = `Question ${currentQuestionIndex + 1} / ${currentQuizData.length}`;
+    progressBar.style.width = `${((currentQuestionIndex + 1) / currentQuizData.length) * 100}%`;
+
+    optionsContainer.innerHTML = '';
+    shuffle([...q.options]).forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn p-4 w-full rounded-lg';
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(option, q, btn);
+        optionsContainer.appendChild(btn);
+    });
+}
+
+function selectAnswer(selected, q, btn) {
+    const correct = q.answer;
+    if (!q.userAnswer) {
+        q.userAnswer = selected;
+        if (selected === correct) score++;
+        updateLiveScore();
+    }
+
+    Array.from(optionsContainer.children).forEach(b => b.disabled = true);
+
+    btn.classList.add(selected === correct ? 'correct' : 'wrong');
+    [...optionsContainer.children].find(b => b.textContent === correct).classList.add('correct');
+
+    feedbackArea.classList.remove('hidden');
+    feedbackExplanation.textContent = q.explanation || '';
+    feedbackTitle.textContent = selected === correct ? "Correct!" : "Incorrect";
+
+    nextBtn.classList.remove('hidden');
+    if (currentQuestionIndex === currentQuizData.length - 1) nextBtn.textContent = "Finish Quiz";
+}
+
 function nextQuestion() {
-  if (currentQuestionIndex === currentQuizData.length - 1) {
-    showResults();
-  } else {
+    if (currentQuestionIndex === currentQuizData.length - 1) return showResults();
     currentQuestionIndex++;
     showQuestion();
-  }
 }
 
 function prevQuestion() {
-  if (currentQuestionIndex > 0) {
-    currentQuestionIndex--;
-    showQuestion();
-  }
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        showQuestion();
+    }
 }
 
-/* ===========================
-   Score & results
-   =========================== */
 function updateLiveScore() {
-  scoreTextLive.textContent = `Score: ${score}`;
+    scoreTextLive.textContent = `Score: ${score}`;
 }
 
+
+/* ------------------ RESULTS ------------------ */
 function showResults() {
-  quizScreen.classList.add("hidden");
-  endScreen.classList.remove("hidden");
-  scoreSection.classList.remove("hidden");
-  finalTitle.textContent = "Quiz Complete!";
+    quizScreen.classList.add('hidden');
+    endScreen.classList.remove('hidden');
 
-  const percentage = Math.round((score / currentQuizData.length) * 100);
-  finalScoreText.textContent = `${score} / ${currentQuizData.length}`;
-  percentageText.textContent = `(${percentage}%)`;
+    const percent = Math.round((score / currentQuizData.length) * 100);
+    finalScoreText.textContent = `${score} / ${currentQuizData.length}`;
+    percentageText.textContent = `(${percent}%)`;
 
-  if (percentage >= 90) {
-    finalMessage.textContent = "Outstanding! You are an expert!";
-  } else if (percentage >= 75) {
-    finalMessage.textContent = "Excellent job! You really know your stuff.";
-  } else if (percentage >= 50) {
-    finalMessage.textContent = "Good work! You've got a solid foundation.";
-  } else {
-    finalMessage.textContent = "Keep practicing! You'll get there.";
-  }
+    finalMessage.textContent =
+        percent >= 90 ? "Outstanding!" :
+        percent >= 75 ? "Excellent!" :
+        percent >= 50 ? "Good effort!" :
+        "Keep practicing!";
 }
 
-/* ===========================
-   Return home / reset
-   =========================== */
 function goHome() {
-  endScreen.classList.add("hidden");
-  quizScreen.classList.add("hidden");
-  reviewScreen.classList.add("hidden");
-  startScreen.classList.remove("hidden");
-  setMode("practice");
+    reviewScreen.classList.add('hidden');
+    quizScreen.classList.add('hidden');
+    endScreen.classList.add('hidden');
+    startScreen.classList.remove('hidden');
+    setMode('practice');
 }
 
-/* ===========================
-   Event listeners
-   =========================== */
-modePracticeBtn.addEventListener("click", () => setMode("practice"));
-modeReviewBtn.addEventListener("click", () => setMode("review"));
 
-modePracticeBtn.addEventListener("keydown", handleModeKey);
-modeReviewBtn.addEventListener("keydown", handleModeKey);
+/* ------------------ EVENTS ------------------ */
+modePracticeBtn.onclick = () => setMode('practice');
+modeReviewBtn.onclick = () => setMode('review');
+startBtn.onclick = startQuiz;
+nextBtn.onclick = nextQuestion;
+prevBtn.onclick = prevQuestion;
+restartBtn.onclick = goHome;
+homeBtnQuiz.onclick = goHome;
+homeBtnReview.onclick = goHome;
 
-startBtn.addEventListener("click", startQuiz);
-nextBtn.addEventListener("click", nextQuestion);
-prevBtn.addEventListener("click", prevQuestion);
-restartBtn.addEventListener("click", goHome);
-homeBtnQuiz.addEventListener("click", goHome);
-homeBtnReview.addEventListener("click", goHome);
+setMode('practice');
 
-/* initial mode */
-setMode("practice");
 
-/* ===========================
-   End of file
-   =========================== */
